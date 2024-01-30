@@ -1,48 +1,40 @@
 #include <iostream>
-#include <string>
 #include <vector>
-#include <map>
-#include <algorithm>
 using namespace std;
-
 int n, m;
-vector<int> v;
-map<string, int> mp;
+int visited[12];
 
-void FastIO() {
-	ios_base::sync_with_stdio(false);
-	cin.tie(NULL);
-	cout.tie(NULL);
+void solve(vector<int> b){
+    // 종료
+        // 시뮬레이션
+
+    // 실행
+    // 재귀호출
+    if(b.size() == m){
+        for(int num: b){
+            cout << num << " ";
+        }
+        cout << '\n';
+        return;
+    }
+    
+    for(int i = 1; i <= n; i++){
+        if(!visited[i]){
+            visited[i] = 1;
+            b.push_back(i);
+            
+            solve(b);
+            
+            visited[i] = 0;
+            b.pop_back();
+        }
+    }
 }
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
-void Solve() {
-	cin >> n >> m;
-
-	for (int i = 0; i < n; i++) {
-		v.push_back(i + 1);
-	}
-
-	do {
-		int cnt = 0;
-		string s = "";
-		for (int i : v) {
-			// cout << i << " ";
-			if (cnt == m)break;
-			s += i + '0';
-			s += " ";
-			cnt++;
-		}
-		mp[s]++;
-	} while (next_permutation(v.begin(), v.end()));
-
-	for (pair<string, int>  i: mp) {
-		cout << i.first << '\n';
-	}
-
-}
-
-int main() {
-	FastIO();
-	Solve ();
-	return 0;
+    cin >> n >> m;
+    vector<int> b;
+    solve(b);
+    return 0;
 }
