@@ -15,10 +15,10 @@ void solve(int idx){
     for(int j = 0; j < n; j++){ // 행 ↓, 0, 1, 2, ... 
         if(check[j])continue; // 행 열 체크
         if(ch1[idx + j])continue; // '/' 대각선 체크
-        if(ch2[idx - j + n])continue; // '\' 대각선 체크 @@@ 
+        if(ch2[idx - j + n])continue; // '\' 대각선 체크 -> "-" 나오니 임의의 수 더하기!!!
 
         check[j] = ch1[idx + j] = ch2[idx - j + n] = true;
-        // -> 0번째 열에 0번째 행 에다가 놓음
+        // -> 0번째 열에 "퀸" 배치
 
         solve(idx + 1);
 
