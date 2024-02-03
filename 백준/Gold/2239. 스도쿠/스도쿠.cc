@@ -3,7 +3,7 @@
 using namespace std;
 
 int a[9][9];
-bool check1[104][104], check2[104][104], check3[104][104] ; // check1, 2 -> 행 열, check2 -> ㅁ * 9
+bool check1[104][104], check2[104][104], check3[104][104] ; // check1, 2 -> 행 열, check3 -> ㅁ * 9
 vector<pair<int, int>> vv; // 0인 지점 담기
 bool flag = false;
 
@@ -16,7 +16,6 @@ void print(){
     }
 }
 void solve(int idx){ // idx == depth
-    // if (flag)return;
 
     if(idx == vv.size()){ // vv 다 소비
         flag = true;
@@ -39,7 +38,7 @@ void solve(int idx){ // idx == depth
         check3[sum][i] = true;
 
         solve(idx + 1);
-        if(flag)return;
+        if(flag)return; // 사전순 출력
 
         check1[x][i] = false;
         check2[y][i] = false;
