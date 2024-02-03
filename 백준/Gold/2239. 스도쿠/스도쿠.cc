@@ -1,48 +1,77 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
-string s[9];
-pair<int, int> pos[81];
-int n;
-bool col[9][10], row[9][10], rc[9][10];
+
+int a[9][9];
+bool check1[104][104], check2[104][104], check3[104][104] ; // check1, 2 -> 행 열, check2 -> ㅁ * 9
+vector<pair<int, int>> vv; // 0인 지점 담기
 bool flag = false;
-void dfs(int idx) {
-    if (flag)return;
-    if (idx >= n) {
-        flag = true;
-        for (int i = 0; i < 9; i++)cout << s[i] << '\n';
-        return;
-    }
-    int x = pos[idx].first, y = pos[idx].second;
-    for (int i = 1; i < 10; i++) {
-        if (row[x][i] == false && col[y][i] == false && rc[(x / 3) * 3 + y / 3][i] == false) {
-            s[x][y] = i + '0';
-            row[x][i] = true; col[y][i] = true; rc[(x / 3) * 3 + y / 3][i] = true;
-            dfs(idx + 1);
-            if (flag)return;
-            row[x][i] = false; col[y][i] = false; rc[(x / 3) * 3 + y / 3][i] = false;
-            s[x][y] = '0';
+
+void print(){
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 9; j++){
+            cout << a[i][j];
         }
+        cout << '\n';
     }
 }
-int main() {
-    ios_base::sync_with_stdio(false); cin.tie(NULL);
-    n = 0;
-    for (int i = 0; i < 9; i++) {
-        cin >> s[i];
-        for (int j = 0; j < 9; j++) {
-            if (s[i][j] == '0') {
-                pos[n].first = i; pos[n].second = j;
-                n++;
-            }
-            else {
-                row[i][s[i][j] - '0'] = true;
-                col[j][s[i][j] - '0'] = true;
-                int sum = (i / 3) * 3 + j / 3;
-                rc[sum][s[i][j] - '0'] = true;
+void solve(int idx){ // idx == depth
+    // if (flag)return;
+
+    if(idx == vv.size()){ // vv 다 소비
+        flag = true;
+        print();
+        return;
+    }
+
+    int x = vv[idx].first; int y = vv[idx].second;
+    for(int i = 1; i <= 9; i++){
+        if(check1[x][i])continue; // 행 체크
+
+        if(check2[y][i])continue; // 열 체크
+
+        int sum = (x / 3) * 3 + (y / 3);
+        if(check3[sum][i])continue; // ㅁ 체크
+
+        a[x][y] = i;
+        check1[x][i] = true;
+        check2[y][i] = true;
+        check3[sum][i] = true;
+
+        solve(idx + 1);
+        if(flag)return;
+
+        check1[x][i] = false;
+        check2[y][i] = false;
+        check3[sum][i] = false;
+    }
+
+    
+
+}
+
+int main(){
+    ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+
+    for(int i = 0; i < 9; i++){
+        for(int j = 0; j < 9; j++){
+            scanf("%1d", &a[i][j]);
+
+            int value = a[i][j];
+
+            if(a[i][j] == 0){ // 0인 지점 담기
+                vv.push_back({i, j}); 
+            }else{ // 0이 아닌 지점 방문 표시
+                check1[i][value] = true;
+                check2[j][value] = true;
+
+                int sum = (i / 3) * 3 + (j / 3);
+                check3[sum][value] = true;
             }
         }
     }
-    dfs(0);
 
+    solve(0);
 
+    return 0;
 }
