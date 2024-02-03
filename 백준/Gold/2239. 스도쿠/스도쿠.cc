@@ -2,6 +2,12 @@
 #include <vector>
 using namespace std;
 
+/*
+* [x][value]
+* [y][value]
+* [sum][value]
+*/
+
 int a[9][9];
 bool check1[104][104], check2[104][104], check3[104][104] ; // check1, 2 -> 행 열, check3 -> ㅁ * 9
 vector<pair<int, int>> vv; // 0인 지점 담기
