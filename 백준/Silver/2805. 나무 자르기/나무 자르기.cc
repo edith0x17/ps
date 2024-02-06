@@ -15,7 +15,7 @@ int main(){
     }
 
     ll l = 0, r = v, mid;
-    while(l <= r){ // 탈출 시 그 전 mid가 최대
+    while(l <= r){ 
         mid = (l + r) / 2; // 자를 높이 -> 최대로
         
         ll sum = 0;
@@ -27,7 +27,7 @@ int main(){
         }
         
         if(sum >= m){ // 가져가는 양 >= 가져가고 싶은 양 -> 더 높이 자르자
-            ret = mid;
+            ret = mid; // 실행 전 mid가 최대
             l = mid + 1;
         }else{
             r = mid - 1;
