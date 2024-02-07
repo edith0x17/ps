@@ -42,14 +42,15 @@ public class Main {
                         int nx = i + dx[k];
                         int ny = j + dy[k];
 
-                        if(a[nx][ny] == 0 || nx < 0 || nx >= 100 || ny < 0 || ny >= 100)ret++;
+                        if(a[nx][ny] == 0 || nx < 0 || nx >= 100 || ny < 0 || ny >= 100)ret++; // 0인 부분 카운트 || 범위 초과 부분 카운트
 
                     }
                 }
             }
         }
 
-        System.out.println(ret);
+        sb.append(ret);
+        System.out.println(sb);
 
     }
 }
