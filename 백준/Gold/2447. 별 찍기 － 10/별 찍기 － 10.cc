@@ -17,9 +17,9 @@ int main() {
 
     star(n, 0, 0);
 
-    for (int i = 0; i < n; i++) { // n - 1 까지
+    for (int i = 0; i < n; i++) { 
 
-        for (int j = 0; j < n; j++) { // 2n - 1 까지
+        for (int j = 0; j < n; j++) { 
 
             cout << a[i][j];
         }
