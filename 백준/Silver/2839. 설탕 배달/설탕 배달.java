@@ -13,16 +13,13 @@ public class Main{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         int n = Integer.parseInt(br.readLine());
 
-//        System.out.println("a : " + a + " b: " + b);
-
         while(true){
-            if(n < 0){
-
+            if(n < 0){ // 불가능한 경우
                 flag = true;
                 break;
             }
-
-
+            
+            // 5나누고 -> X -> 3빼주고 -> ...
             if(n % 5 == 0){
                 ret += n / 5;
                 break;
