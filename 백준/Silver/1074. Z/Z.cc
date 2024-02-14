@@ -2,35 +2,24 @@
 #include <cmath>
 using namespace std;
 int n, r, c;
-int ret, cnt;
-void go(int s, int x, int y){
-    // cout << "cnt : " << cnt << '\n';
-    if(x == r && y == c){ // r과 c
-        ret = cnt;
+int ans = 0;
+void dc(int x, int y, int size){
+    if(c==x && r==y){ // 찾으려는 열과 행이 일치하면 
+        cout << ans;
         return;
     }
-
-    else if (r >= x && c >= y && r < x + s && c < y + s ){ // r과 c가 4분면에 있을때
-
-        int k = s / 2;
-
-        go(k, x, y);
-
-        go(k, x, y + k);
-
-        go(k, x + k, y);
-
-        go(k, x + k, y + k);
-    }else{ // 정사각형 넓이
-        cnt += s * s; // 각 사각형의 면적이 1인 경우(사각형의 한 변의 길이인 s가 1인 경우) cnt + 1
+    else if (c < x + size && r < y + size && c >= x && r >= y){
+        //찾으려는 열과 행이 4분면안에 있을 경우
+        dc(x, y, size / 2);
+        dc(x + size / 2, y, size / 2);
+        dc(x, y + size / 2, size / 2);
+        dc(x + size / 2, y + size / 2, size / 2);
+    }else{ // 없다면 숫자 카운트 -> 정사각형 넓이
+        ans += size * size;
     }
 }
 int main(){
     cin >> n >> r >> c;
-
-    go(pow(2, n), 0, 0);
-
-    cout << ret << '\n';
-
+    dc(0, 0, pow(2, n));
     return 0;
 }
