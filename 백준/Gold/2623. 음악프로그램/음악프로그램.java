@@ -28,22 +28,16 @@ public class Main {
         }
 
         for (int i = 0; i < m; i++) {
-            int prev = -1;
-
             st = new StringTokenizer(br.readLine());
-            // 3 1 4 3
-            int k = Integer.parseInt(st.nextToken()); // 3
 
-            for(int j = 0; j < k; j++){// 1 4 3
-                int temp = Integer.parseInt(st.nextToken());// 1
+            int k = Integer.parseInt(st.nextToken());
+            int prev = Integer.parseInt(st.nextToken());
+            for (int j = 1; j < k; j++) {
+                int singer = Integer.parseInt(st.nextToken());
+               adj[prev].add(singer);
+                ind[singer]++;
 
-                if(j != 0){ //j != 0
-                    adj[prev].add(temp);
-                    ind[temp]++;
-                    prev = temp;
-                }else{ // j == 0
-                    prev = temp; // prev = 1
-                }
+                prev = singer;
             }
         }
 
@@ -53,7 +47,6 @@ public class Main {
 
         while (!q.isEmpty()) {
             int nowNode = q.poll(); // front, pop
-//            System.out.println(nowNode);
             ret.add(nowNode);
 
             for (int nextNode : adj[nowNode]) {
@@ -65,10 +58,10 @@ public class Main {
             }
         }
 
-        if(ret.size() != n || n == cnt){
+        if (ret.size() != n) {
             System.out.println(0);
-        }else{
-            for(int i: ret)
+        } else {
+            for (int i : ret)
                 System.out.println(i);
         }
 
