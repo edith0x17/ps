@@ -1,47 +1,46 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
 using namespace std;
+vector<int> adj[2001];
+bool visited[2001], flag;
 
-int n, m;
-vector<int> adj[2004];
-int visited[2004];
-bool flag;
-void dfs(int depth, int here) {
+void dfs(int cnt, int here) {
+	if(flag)return; // 더 이상 탐색 X
 
-	if (depth == 5) {
+	if(cnt == 5) { // 종료조건
 		flag = true;
-		cout << 1 << '\n';
-		exit(0);
+		return;
 	}
 
-	for (int there : adj[here]) {
-		if (!visited[there]) {
-			visited[there] = 1;
+	for (int there: adj[here]) {
+		if(!visited[there]){
+			visited[there] = true;
 
-			dfs(depth + 1, there);
+			dfs(cnt + 1, there);
 
-			visited[there] = 0;
+			visited[there] = false;
 		}
 	}
-
 }
-
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
+	int n, m;
 	cin >> n >> m;
-	for (int i = 0; i < m; i++) {
-		int t, f;
-		cin >> t >> f;
 
-		adj[t].push_back(f);
-		adj[f].push_back(t);
+	for (int i = 0; i < m; i++) {
+		int x, y;
+		cin >> x >> y;
+		adj[x].push_back(y);
+		adj[y].push_back(x);
 	}
 
 	for (int i = 0; i < n; i++) {
+		visited[i] = true;
 
-		dfs(0, i);
+		dfs(1, i);
 
-		if (flag)break;
+		visited[i] = false;
 	}
 
 	if (flag)cout << 1 << '\n';
