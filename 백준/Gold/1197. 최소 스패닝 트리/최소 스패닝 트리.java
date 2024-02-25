@@ -1,65 +1,79 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
-class Main {
+public class Main{
 
-    static class Edge implements Comparable<Edge> {
-        int from, to, c;
+    static int v, e;
+    static int[] p;
+    static Node[] nodes;
 
-        public Edge(int from, int to, int c) {
+    static class Node implements Comparable<Node>{
+        int from;
+        int to;
+        int c;
+
+        public Node() {
+        }
+
+        public Node(int from, int to, int c) {
             this.from = from;
             this.to = to;
             this.c = c;
         }
 
         @Override
-        public int compareTo(Edge other) {
-            return Integer.compare(this.c, other.c);
+        public int compareTo(Node o) {
+            return Integer.compare(this.c, o.c);
         }
     }
+    
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        v = Integer.parseInt(st.nextToken());
+        e = Integer.parseInt(st.nextToken());
 
-    static int[] p;
+        p = new int[v + 4];
+        for (int i = 1; i <= v; i++) p[i] = i; // make set
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        nodes = new Node[e];
 
-        int n = scanner.nextInt();
-        int m = scanner.nextInt();
+        for(int i = 0; i < e; i++){
+            st = new StringTokenizer(br.readLine());
+            int f = Integer.parseInt(st.nextToken());
+            int t = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
 
-        p = new int[n + 1];
-        for (int i = 1; i <= n; i++) p[i] = i;
-
-        Edge[] edges = new Edge[m];
-        for (int i = 0; i < m; i++) {
-            int from = scanner.nextInt();
-            int to = scanner.nextInt();
-            int c = scanner.nextInt();
-            edges[i] = new Edge(from, to, c);
+            nodes[i] = new Node(f, t, c);
         }
 
-        Arrays.sort(edges);
+        Arrays.sort(nodes);
 
         int ret = 0;
-        for (Edge edge : edges) {
-            int t1 = find(edge.from);
-            int t2 = find(edge.to);
+        for(int i = 0; i < e; i++){
 
-            if (t1 != t2) {
-                ret += edge.c;
-                union(t1, t2);
+            int t1 = Find(nodes[i].from);
+            int t2 = Find(nodes[i].to);
+
+            if(t1 != t2){ // 다른 그룹이면 Union
+                Union(t1, t2);
+                ret += nodes[i].c;
             }
         }
 
         System.out.println(ret);
     }
 
-    static int find(int x) {
-        if (x == p[x]) return x;
-        return p[x] = find(p[x]);
+    static void Union(int x, int y){
+        x = Find(x);
+        y = Find(y);
+        p[y] = p[x];
     }
 
-    static void union(int x, int y) {
-        x = find(x);
-        y = find(y);
-        p[y] = p[x];
+    static int Find(int x){
+        if(x == p[x])return x;
+        else return p[x] = Find(p[x]);
     }
 }
