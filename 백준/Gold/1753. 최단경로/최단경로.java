@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -10,10 +9,9 @@ public class Main {
     static int k;
     static ArrayList<A>[] adj; // {to, c}
     static int[] d = new int[20001];
-    static PriorityQueue<A> pq = new PriorityQueue<>(Comparator.comparingInt(o -> o.c));
+    static PriorityQueue<A> pq = new PriorityQueue<>();
     static int INF = Integer.MAX_VALUE;
-
-    static class A implements Comparable<A> {
+    static class A implements Comparable<A>{
         int to;
         int c;
 
@@ -24,7 +22,7 @@ public class Main {
 
         @Override
         public int compareTo(A o) {
-            return Integer.compare(this.c, this.c);
+            return Integer.compare(this.c, o.c);
         }
     }
 
@@ -55,12 +53,10 @@ public class Main {
 
         dijkstra(k);
 
-        for (int i = 1; i <= v; i++) {
-            if (d[i] == INF) bw.write("INF\n");
-            else bw.write(d[i] + "\n");
+        for (int i = 1; i <= v; i++){
+            bw.write(d[i] == INF ? "INF\n" : d[i] + "\n");
         }
         bw.flush();
-
         bw.close();
         br.close();
     }
