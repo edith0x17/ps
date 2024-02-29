@@ -8,22 +8,11 @@ int n, m, cnt;
 int  a[10004][504], visited[10004][504];
 vector<pair<int, int>> bakerList;
 
-void print() {
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < m; j++) {
-			cout << visited[i][j] << ' ';
-		}
-		cout << '\n';
-	} 
-	cout << endl;
-}
-
 void dfs(int x, int y) {
 	visited[x][y] = 1;
 
 	if (y == m - 1) {
 
-		// print();
 		flag = true;
 		cnt++;
 		return;
@@ -38,7 +27,7 @@ void dfs(int x, int y) {
 		if (a[nx][ny] == 1 || visited[nx][ny])continue;
 
 		dfs(nx, ny);
-		if (flag)return;
+		if (flag)return; // 종료
 	}
 }
 
