@@ -29,7 +29,6 @@ public class Main {
     static Queue<Data> waterQ = new ArrayDeque<>(); // 물
     static Queue<Data> queue = new ArrayDeque<>(); // 고슴도치
     static Data ret;
-    static int day;
 
     public static void main(String[] args) throws IOException {
 
@@ -48,14 +47,13 @@ public class Main {
             for(int j = 0; j < c; j++){
                 a[i][j] = s.charAt(j);
                 char ch = a[i][j];
-
                 if(ch == '*'){ // 물
                     visited[i][j] = 1;
                     waterQ.offer(new Data(i, j));
                 }else if(ch == 'S'){ // 고슴도치
                     visited[i][j] = 1;
                     queue.offer(new Data(i, j));
-                }else if(ch == 'D'){
+                }else if(ch == 'D'){ // 비버의 굴
                     ret = new Data(i, j);
                 }
             }
@@ -72,11 +70,8 @@ public class Main {
 
         while(!queue.isEmpty()){
 
-            day++;
-
             // 물 이동
             int S = waterQ.size();
-//            System.out.println("waterQ : " + S);
             for(int k = 0; k < S; k++){
                 int x = waterQ.peek().x; int y = waterQ.peek().y;
                 waterQ.poll();
@@ -88,9 +83,7 @@ public class Main {
                     if(nx < 0 || nx >= r || ny < 0 || ny >= c || visited[nx][ny] != 0)continue; // 범위 || 방문
                     if(a[nx][ny] == 'X')continue; // 돌
                     if(a[nx][ny] == 'D')continue; // 비버의 굴
-                    if(a[nx][ny] == '*')continue;
 
-                    a[nx][ny] = '*';
                     visited[nx][ny] = 1;
                     waterQ.offer(new Data(nx, ny));
                 }
@@ -98,7 +91,6 @@ public class Main {
             
             // 고슴도치 이동
             int ss = queue.size();
-//            System.out.println("queue : " + ss);
             for(int k = 0; k < ss; k++){
                 int x = queue.peek().x; int y = queue.peek().y;
                 queue.poll();
@@ -110,9 +102,7 @@ public class Main {
                     if(nx < 0 || nx >= r || ny < 0 || ny >= c || visited[nx][ny] != 0)continue; // 범위 || 방문
                     if(a[nx][ny] == 'X')continue; // 돌
                     if(a[nx][ny] == '*')continue; // 물
-                    if(a[nx][ny]=='S') continue;
-
-                    a[nx][ny] = 'S';
+                    
                     visited[nx][ny] = visited[x][y] + 1;
                     queue.offer(new Data(nx, ny));
                 }
