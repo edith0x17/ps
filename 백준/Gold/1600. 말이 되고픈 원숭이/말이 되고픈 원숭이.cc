@@ -1,9 +1,8 @@
-/* 
-더 빨리 오는 경우
-{ 이동횟수, 능력사용횟수 } 
+/*
+!!!더 빨리 오는 경우!!!
+{ 이동횟수, 능력사용횟수 }
 */
 
-// 더 빨리 오는 경우
 #include <iostream>
 #include <tuple>
 #include <queue>
@@ -14,11 +13,11 @@ const int hdx[] = { -1, -2, -2, -1, 1, 2, 2, 1 };
 const int hdy[] = { -2, -1, 1, 2, 2, 1, -1, -2 };
 int k, n, m;
 int a[204][204];
-int visited[204][204][204]; 
+int visited[204][204][204];
 queue<pair<pair<int, int>, pair<int, int>>> q; //{{x, y}, {이동횟수, 능력사용횟수}}...
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
-	
+
 	cin >> k;
 
 	cin >> m >> n;
@@ -56,7 +55,9 @@ int main() {
 				if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; //범위
 
 				if (a[nx][ny] == 0 && visited[nx][ny][ability + 1] == 0) {
-					visited[nx][ny][ability + 1] = visited[x][y][ability] + 1;
+
+					visited[nx][ny][ability + 1] = visited[x][y][ability] + 1; //[x][y] 가는데 ability씀
+
 					q.push(make_pair(make_pair(nx, ny), make_pair(cnt + 1, ability + 1)));
 				}
 			}
@@ -68,8 +69,10 @@ int main() {
 
 			if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; //범위
 
-			if (a[nx][ny] == 0 && visited[nx][ny][ability] == 0) {
+			if (a[nx][ny] == 0 && visited[nx][ny][ability] == 0) { //[x][y] 가는데 ability씀
+
 				visited[nx][ny][ability] = visited[x][y][ability] + 1;
+
 				q.push(make_pair(make_pair(nx, ny), make_pair(cnt + 1, ability)));
 			}
 		}
