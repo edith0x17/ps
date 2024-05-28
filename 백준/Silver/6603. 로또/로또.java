@@ -1,42 +1,50 @@
-import java.util.Scanner;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main{
 
     static int k;
-    static int[] arr, ret;
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    static int[] S, ret;
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         while(true){
-            k = sc.nextInt();
-
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            k  = Integer.parseInt(st.nextToken());
             if(k == 0)break;
-
-            arr = new int[k + 4];
+            S = new int[k + 4];
             ret = new int[6];
 
-            for(int i = 1; i <= k; i++){
-                arr[i] = sc.nextInt();
+            for(int i = 0; i < k; i++){
+                S[i] = Integer.parseInt(st.nextToken());
             }
 
-            go(0, 1);
-
-            System.out.println();
+            combi(0, 0);
+            bw.write("\n");
         }
+
+        bw.flush();
+        bw.close();
     }
 
-    static void go(int cnt, int start){
-        if(cnt == 6){
-            for(int idx: ret){
-                System.out.printf("%d ", arr[idx]);
-            }
-            System.out.println();
+    static void combi(int depth, int start) throws IOException{
+        if(depth == 6){
+            print();
             return;
         }
 
-        for(int i = start; i <= k; i++){
-            ret[cnt] = i;
-            go(cnt + 1, i + 1);
+        for(int i = start; i < k; i++){
+            ret[depth] = S[i];
+            combi(depth + 1, i + 1);
+            //
         }
+    }
+
+    static void print() throws IOException{
+        for(int i = 0; i < 6; i++){
+            bw.write(ret[i] + " ");
+        }
+        bw.write("\n");
     }
 }
