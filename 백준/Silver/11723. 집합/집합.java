@@ -1,33 +1,52 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
 
 public class Main {
+
+    static int m;
+    static boolean[] a = new boolean[21];  // 1부터 20까지 사용
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        int S = 0;
-        int M = Integer.parseInt(br.readLine());
-        StringTokenizer st;
-        
-        for(int i = 0; i < M; i++) {
-            st = new StringTokenizer(br.readLine());
-            String str = st.nextToken();
-            if(str.equals("all")) S = (1 << 21) - 1;
-            else if(str.equals("empty")) S = 0;
-            else {
-                int num = Integer.parseInt(st.nextToken());
-                if(str.equals("add"))
-                    S |= (1 << num);
-                else if(str.equals("remove"))
-                    S &= ~(1 << num);
-                else if(str.equals("check"))
-                    sb.append((S & (1 << num)) != 0 ? 1 : 0).append("\n");
-                else if(str.equals("toggle"))
-                    S ^= (1 << num);
+
+        m = Integer.parseInt(br.readLine());
+        while (m-- > 0) {
+            String s = br.readLine();
+            String[] parts = s.split(" ");
+            
+            String command = parts[0];
+            int index = (parts.length > 1) ? Integer.parseInt(parts[1]) : 0;
+
+            switch (command) {
+                case "add":
+                    a[index] = true;
+                    break;
+                case "remove":
+                    a[index] = false;
+                    break;
+                case "check":
+                    bw.write(a[index] ? "1\n" : "0\n");
+                    break;
+                case "toggle":
+                    a[index] = !a[index];
+                    break;
+                case "all":
+                    for (int i = 1; i <= 20; i++) {
+                        a[i] = true;
+                    }
+                    break;
+                case "empty":
+                    for (int i = 1; i <= 20; i++) {
+                        a[i] = false;
+                    }
+                    break;
+                default:
+                    bw.write("Invalid command\n");
+                    break;
             }
         }
-        System.out.println(sb);
+
+        bw.flush();
+        bw.close();
     }
 }
