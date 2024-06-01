@@ -1,38 +1,41 @@
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayDeque;
 import java.util.Queue;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
-public class Main {
+public class Main{
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int n, k;
+    static Queue<Integer> q = new ArrayDeque<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-	public static void main(String[] args) throws IOException {
+        n = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
 
-//		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		Scanner sc = new Scanner(System.in);
-		int n = sc.nextInt();
-		int k = sc.nextInt();
+        for(int i = 0; i < n; i++){
+            q.offer(i + 1);
+        }
 
-		Queue<Integer> q = new ArrayDeque<>();
+        sb.append("<");
+        int cnt = 0;
+        while(!q.isEmpty()){
+            int ret = q.poll();
+            cnt++;
 
-		for (int i = 1; i <= n; i++) {
-			q.offer(i);
-		}
-		
-		System.out.printf("<");
-		int cnt = 0;
-		while (q.size() != 1) {
+            if(cnt == k){
+                if(q.size() == 0){
+                    sb.append(ret);
+                }else sb.append(ret + ", ");
+                cnt = 0;
+            }else q.offer(ret);
+        }
+        sb.append(">");
 
-			cnt++;
-			if (cnt % k == 0) {
-				cnt = 0;
-				System.out.printf("%d, ", q.poll());
-			} else {
-				int here = q.poll();
-				q.offer(here);
-			}
-		}
-		System.out.printf("%d>%n", q.poll());
-
-	}
-
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
+    }
 }
