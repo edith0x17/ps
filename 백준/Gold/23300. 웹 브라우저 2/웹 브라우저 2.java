@@ -1,136 +1,110 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static boolean flag = false;
+    static int N, Q, now = -1;
+    static Stack<Integer> back = new Stack<>();
+    static Stack<Integer> front = new Stack<>();
 
-	static int n, q;
-	static Stack<Integer> back = new Stack<>();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-	static int access;
+        N = Integer.parseInt(st.nextToken());
+        Q = Integer.parseInt(st.nextToken());
 
-	static Stack<Integer> front = new Stack<>();
+        while (Q-- > 0) {
+            st = new StringTokenizer(br.readLine());
+            String command = st.nextToken();
 
-	static int flag;
+            switch (command) {
+                case "B":
+                    if (!back.isEmpty()) {
+                        front.push(now);
+                        now = back.pop();
+                    }
+                    break;
 
-	public static void main(String[] args) {
+                case "A":
+                    int num = Integer.parseInt(st.nextToken());
 
-		Scanner sc = new Scanner(System.in);
+                    front.clear();
+                    if (flag) {
+                        back.push(now);
+                    } else {
+                        flag = true;
+                    }
 
-		n = sc.nextInt();
-		q = sc.nextInt();
-		
-		sc.nextLine();
-		
-		for (int i = 0; i < q; i++) {
-			String s = sc.nextLine();
-			String[] strArr = s.split(" "); // strArr[0] -> op, strArr[1] -> num
+                    now = num;
+                    break;
+                case "F":
+                    if (!front.isEmpty()) {
+                        back.push(now);
+                        now = front.pop();
+                    }
+                    break;
 
-			if (strArr[0].equals("B")) {
-				B();
-			} else if (strArr[0].equals("A")) {
-				flag++; // @@@
-				A(strArr[1]);
+                case "C":
+                    go();
+                    break;
 
-			} else if (strArr[0].equals("F")) {
-				F();
-			} else if(strArr[0].equals("C")){
-				C();
-			}
+                default:
+                    bw.write("Invalid command\n");
+                    break;
+            }
+        }
 
-//			for(String temp: strArr) {
-//				System.out.printf("%s ", temp);
-//			}
-			
-		}
+        // Print current page
+        if (now != -1) {
+            sb.append(now).append("\n");
+        } else {
+            sb.append("-1\n");
+        }
 
-		// print access, back, front
-		System.out.println(access);
+        // Print back stack
+        if(!back.isEmpty()) {
+            while (!back.isEmpty()) {
+                sb.append(back.peek()).append(" ");
+                back.pop();
+            }
+            sb.append("\n");
+        }else sb.append("-1\n");
 
-		if (back.isEmpty()) {
-			System.out.print(-1);
-		} else {
-			while (!back.isEmpty()) {
-				System.out.printf("%d ", back.pop());
-			}
-		}
+        // Print front stack
+        if(!front.isEmpty()) {
+            while (!front.isEmpty()) {
+                sb.append(front.peek()).append(" ");
+                front.pop();
+            }
+            sb.append("\n");
+        }else sb.append("-1\n");
 
-		System.out.println();
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
+    }
 
-		if (front.isEmpty()) {
-			System.out.print(-1);
-		} else {
-			while (!front.isEmpty()) {
-				System.out.printf("%d ", front.pop());
-			}
-		}
-		
-		System.out.println();
-	}
+    static void go() {
+        List<Integer> tempList = new ArrayList<>();
+        int prev = 0;
+        while (!back.isEmpty()) {
+            if (prev == back.peek()) {
+                back.pop();
+                continue;
+            }
+            tempList.add(back.peek());
 
-	static void B() {
-		if (back.isEmpty()) {
-			return;
-		}
+            prev = back.peek();
+            back.pop();
+        }
 
-		// 1)
-		front.push(access);
+        Collections.reverse(tempList);
 
-		// 2)
-		access = back.peek();
-		back.pop();
-	}
-
-	static void A(String num) {
-		front.clear();
-
-		if (flag == 1) {
-			access = Integer.parseInt(num);
-		} else {
-			back.push(access);
-			access = Integer.parseInt(num);
-		}
-
-	}
-
-	static void F() {
-		if (front.isEmpty()) {
-			return;
-		}
-
-		// 1)
-		back.push(access);
-
-		// 2)
-		access = front.peek();
-		front.pop();
-	}
-
-	static void C() {
-		List<Integer> tempList = new ArrayList<>();
-
-		int prev = 0;
-		while (!back.isEmpty()) {
-			if (prev == back.peek()) {
-				back.pop();
-				continue;
-			}
-
-			tempList.add(back.peek());
-
-			prev = back.peek();
-			
-			back.pop();
-		}
-		
-		Collections.reverse(tempList);
-
-		for (int i = 0; i < tempList.size(); i++) {
-			back.push(tempList.get(i));
-//			System.out.println(tempList.get(i));
-		}
-
-	}
+        for (int i = 0; i < tempList.size(); i++) {
+            back.push(tempList.get(i));
+        }
+    }
 }
