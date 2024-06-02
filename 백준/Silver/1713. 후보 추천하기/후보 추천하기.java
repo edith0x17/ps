@@ -2,79 +2,74 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class A implements Comparable<A> {
+    static class Data implements Comparable<Data> {
         int num;
-        int day;
-        int r;
+        int recommend;
+        int date;
 
-        public A(int num, int day, int r) {
+        public Data(int num, int recommend, int date) {
             this.num = num;
-            this.day = day;
-            this.r = r;
+            this.recommend = recommend;
+            this.date = date;
         }
 
         @Override
-        public int compareTo(A o) {
-            if (this.r == o.r) {
-                return o.day - this.day; // 날짜가 클수록 우선
+        public int compareTo(Data o) {
+            if (this.recommend == o.recommend) {
+                return -(this.date - o.date); // 추천 횟수가 같으면 날짜 내림차순
             }
-            return o.r - this.r; // 추천수가 클수록 우선
+            return -(this.recommend - o.recommend); // 추천 횟수 내림차순
         }
     }
 
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static int n, k;
-    static List<A> vv = new ArrayList<>();
+    static List<Data> list = new ArrayList<>();
+    static Map<Integer, Data> map = new HashMap<>(); // <key, value>
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st;
 
         n = Integer.parseInt(br.readLine());
         k = Integer.parseInt(br.readLine());
 
-        st = new StringTokenizer(br.readLine());
+        StringTokenizer st = new StringTokenizer(br.readLine());
         for (int i = 0; i < k; i++) {
             int temp = Integer.parseInt(st.nextToken());
-            A a = new A(temp, i, 1);
 
-            if (!vv.isEmpty()) {
-                int ret = check(temp);
+            if (map.containsKey(temp)) {
+                // num이 있는 경우
+                Data data = map.get(temp);
+                data.recommend++;
+            } else {
+                // num이 없는 경우
+                if(n < list.size() + 1){
+                    Collections.sort(list); // 정렬
 
-                if (ret >= 0) { // 이미 사진에 있으면
-                    vv.get(ret).r++;
-                } else { // 사진에 없으면
-                    if (n < vv.size() + 1) {
-                        Collections.sort(vv); // 정렬
-                        vv.remove(vv.size() - 1); // 가장 마지막 요소 제거
-                    }
-                    vv.add(a); // 새로운 사진 추가
+                    map.remove(list.get(list.size() - 1).num);
+                    list.remove(list.size() - 1);
                 }
-            } else { // 비어 있는 경우
-                vv.add(a);
+
+                Data data = new Data(temp, 1, i);
+                map.put(temp, data);
+                list.add(data);
             }
         }
 
-        List<Integer> ans = new ArrayList<>();
-        for (A i : vv) {
-            ans.add(i.num);
+        List<Integer> ret = new ArrayList<>();
+        for (Data data : list) {
+            ret.add(data.num);
         }
 
-        Collections.sort(ans);
-        for (int i : ans) {
-            bw.write(i + " ");
+        Collections.sort(ret);
+
+        for (int num: ret) {
+            sb.append(num).append(" ");
         }
 
+        bw.write(sb + "");
         bw.flush();
         bw.close();
-    }
-
-    static int check(int tar) {
-        for (int i = 0; i < vv.size(); i++) {
-            if (vv.get(i).num == tar) {
-                return i;
-            }
-        }
-        return -1;
     }
 }
