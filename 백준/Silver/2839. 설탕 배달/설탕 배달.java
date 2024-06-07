@@ -1,35 +1,37 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import static java.lang.Math.min;
+import java.io.*;
 
 public class Main{
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    static int ret;
+    static int n, ans;
     static boolean flag;
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int n = Integer.parseInt(br.readLine());
+
+        n = Integer.parseInt(br.readLine());
 
         while(true){
             if(n < 0){ // 불가능한 경우
                 flag = true;
                 break;
             }
-            
-            // 5나누고 -> X -> 3빼주고 -> ...
+
+            // 5나누고 -> 안되면 -> 3빼주고
             if(n % 5 == 0){
-                ret += n / 5;
+                ans += n / 5;
                 break;
             }else{
                 n -= 3;
-                ret++;
+                ans++;
             }
         }
 
-        if(flag) System.out.println(-1);
-        else System.out.println(ret);
+        if(flag)sb.append(-1);
+        else sb.append(ans);
+
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
     }
 }
