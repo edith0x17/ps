@@ -1,71 +1,71 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
 import java.util.StringTokenizer;
 
-public class Main {
+public class Main{
+    static class Data{
+        int s; //내구도
+        int w; //무게
 
-    static int ret = -987654321;
-    static int n;
-    static int[] s;
-    static int[] w;
-
-    public static void main(String[] args) throws IOException {
-
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        n = Integer.parseInt(br.readLine());
-        s = new int[n];
-        w = new int[n];
-
-        for (int i = 0; i < n; i++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            s[i] = Integer.parseInt(st.nextToken());
-            w[i] = Integer.parseInt(st.nextToken());
+        public Data(int s, int w) {
+            this.s = s;
+            this.w = w;
         }
+    }
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-//        System.out.println(Arrays.toString(s));
-//        System.out.println(Arrays.toString(w));
+    static int n, ret;
+    static Data[] data;
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        n = Integer.parseInt(br.readLine());
+        data = new Data[n];
+
+        for(int i = 0; i < n; i++){
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            data[i] = new Data(Integer.parseInt(st.nextToken()), Integer.parseInt(st.nextToken()));
+        }
 
         go(0);
 
-        System.out.println(ret);
+        sb.append(ret);
 
+        bw.write(ret + "");
+        bw.flush();
+        bw.close();
     }
 
-    static void go(int idx) {
-
-        if (idx == n) { // 끝
+    static void go(int idx){
+        //종료조건
+        if(idx == n){
             int cnt = 0;
-            for (int i = 0; i < n; i++) {
-                if (s[i] <= 0) cnt++; // 깨진거
+            for(int i = 0; i < n; i++){
+                if(data[i].s <= 0)cnt++;
             }
-            ret = Math.max(ret, cnt); // MAX
+            ret = Math.max(ret, cnt);
             return;
         }
+        
+        //로직
+        if(data[idx].s <= 0)go(idx + 1);
+        else{
+            boolean flag = false;
 
+            for(int i = 0; i < n; i++){
+                if(idx == i || data[i].s <= 0)continue; //자기자신 || 깨진거
 
-        if (s[idx] <= 0) { // 선택 그러나 깨진거 -> 오른쪽 이동
-            go(idx + 1);
-        } else { // 선택 안깨진거
-            boolean flag = false; // 쳤는지 안쳤는지
-
-            for (int i = 0; i < n; i++) {
-                if (idx == i || s[i] <= 0) continue; // 자기자신 || 깨진거
-
-                s[idx] -= w[i];
-                s[i] -= w[idx];
+                data[idx].s -= data[i].w; //손에 든 계란
+                data[i].s -= data[idx].w; //고른 계란
                 flag = true;
 
-                go(idx + 1); // 오른쪽 이동
+                go(idx + 1);
 
-                s[idx] += w[i]; // 원복
-                s[i] += w[idx]; // 원복
+                data[idx].s += data[i].w; //손에 든 계란
+                data[i].s += data[idx].w; //고른 계란
             }
 
-            if (!flag) go(n); // 다 깨짐
+            if(!flag)go(n); //다 깨짐
         }
-
     }
-
 }
