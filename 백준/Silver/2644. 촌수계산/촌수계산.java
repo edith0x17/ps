@@ -1,92 +1,70 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Main {
-
-    static int n, m, cnt; //
-    static int x, y;
-    static ArrayList<Integer>[] adj;
+public class Main{
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int n, m;
+    static int a, b;
+    static ArrayList<Integer>[] adjList;
     static int[] visited;
-
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
         n = Integer.parseInt(br.readLine());
-        adj = new ArrayList[n + 4];
-        for (int i = 0; i < n + 4; i++) {
-            adj[i] = new ArrayList<>();
+        adjList = new ArrayList[n + 4];
+        for(int i = 0; i < n + 4; i++) {
+            adjList[i] = new ArrayList<Integer>();
         }
         visited = new int[n + 4];
 
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        x = Integer.parseInt(st.nextToken());
-        y = Integer.parseInt(st.nextToken());
+        a = Integer.parseInt(st.nextToken());
+        b = Integer.parseInt(st.nextToken());
 
         m = Integer.parseInt(br.readLine());
-
-        for (int i = 0; i < m; i++) {
+        for(int i = 0; i < m; i++){
             st = new StringTokenizer(br.readLine());
+            int x = Integer.parseInt(st.nextToken());
+            int y = Integer.parseInt(st.nextToken());
 
-            int t, f;
-            t = Integer.parseInt(st.nextToken());
-            f = Integer.parseInt(st.nextToken());
-
-            adj[t].add(f);
-            adj[f].add(t);
+            adjList[x].add(y); // 양방향
+            adjList[y].add(x); // 양방향
         }
 
-        bfs(x);
+        bfs(a);
 
-        if (visited[y] != 0) {
-            System.out.println(visited[y] - 1); // start is counting...
-        } else {
-            System.out.println(-1);
-        }
+        if (visited[b] != 0) sb.append(visited[b] - 1);
+        else sb.append(-1);
 
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
     }
 
-    static void bfs(int start) {
-
+    static void bfs(int here){
         Queue<Integer> q = new ArrayDeque<>();
-        q.add(start);
-        visited[start] = 1;
 
+        visited[here] = 1;
+        q.add(here);
         while (!q.isEmpty()) {
             int qSize = q.size();
 
-            // if (start == end) return;
+            while (qSize-- != 0) { // // Flood-fill
+                here = q.poll(); // front()& pop()
 
-            while (qSize-- != 0) {
-                start = q.poll(); // front(), pop()
+                for (int there : adjList[here]) {
+                    if (visited[there] != 0) continue;
 
-                for (int middle : adj[start]) {
-                    if (visited[middle] != 0) continue;
-
-                    q.add(middle);
-                    visited[middle] = visited[start] + 1;
+                    q.add(there);
+                    visited[there] = visited[here] + 1;
                 }
             }
-
-            cnt++;
-        }
-    }
-
-    static class Data {
-        int a;
-        int b;
-
-        public Data() {
-        }
-
-        public Data(int a, int b) {
-            this.a = a;
-            this.b = b;
         }
     }
 }
+
