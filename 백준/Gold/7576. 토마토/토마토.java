@@ -1,21 +1,26 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Main {
+public class Main{
+    static class Data{
+        int x;
+        int y;
 
-    static int[] dx = {-1, 0, 1, 0};
-    static int[] dy = {0, 1, 0, -1};
+        public Data(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    static int dx[] = {-1, 0, 1, 0};
+    static int dy[] = {0, 1, 0, -1};
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
     static int n, m;
-    static int[][] map = new int[1004][1004];
-    static int[][] visited = new int[1004][1004];
-    static boolean flag;
+    static int[][] a, visited;
     static Queue<Data> q = new ArrayDeque<>();
-
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
@@ -23,90 +28,64 @@ public class Main {
         m = Integer.parseInt(st.nextToken());
         n = Integer.parseInt(st.nextToken());
 
-        for (int i = 0; i < n; i++) {
+        a = new int[n][m];
+        visited = new int[n][m];
 
+        boolean flag = false; // 로직 필요 X
+        for(int i = 0; i < n; i++){
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
+            for(int j = 0; j < m; j++){
+                a[i][j] = Integer.parseInt(st.nextToken());
 
-                if (map[i][j] == 0) flag = true; // check1
+                if(a[i][j] != -1)flag = true; // 로직 필요 O
 
-                if (map[i][j] == 1) { // 토마토 익음
-
-                    q.add(new Data(i, j));
+                if(a[i][j] == 1){
                     visited[i][j] = 1;
-
+                    q.offer(new Data(i, j));
                 }
             }
         }
 
-        if (flag) { // 안익음
-            go();
-            
-            int ret = check();
-            if (ret != -1) { // 다익음
-                System.out.println(ret);
-            } else { // 안익음
-                System.out.println(-1);
-            }
-        } else { // 다익음
-            System.out.println(0);
-        }
+        if(flag){
+            // 로직
+            bfs();
+            sb.append(check());
+        }else sb.append(0);
 
-
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
     }
 
-    static int check() { // 익음 안익음 체크
-        int max = -987654321;
-        for (int i = 0; i < n; i++) {
+    static int check(){
+        int ret = 0;
 
-            for (int j = 0; j < m; j++) {
-                if (map[i][j] == 0) return -1;
-                max = Math.max(max, visited[i][j]);
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(a[i][j] == 0)return -1;
+                ret = Math.max(ret, visited[i][j]);
             }
         }
-        return max - 1;
+        return ret - 1;
     }
 
-    static void go() {
-        // 큐, push, visit
+    static void bfs(){
+        while(!q.isEmpty()){
+            Data d = q.poll(); // q.front(), q.pop()
 
-        while (!q.isEmpty()) {
-            int x = q.peek().x;
-            int y = q.peek().y;
-            q.poll();
+            for(int i = 0; i < 4; i++){
+                int nx = d.x + dx[i];
+                int ny = d.y + dy[i];
 
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dx[i];
-                int ny = y + dy[i];
+                if(nx < 0 || nx >= n || ny < 0 || ny >= m || visited[nx][ny] != 0)continue; // 범위 || 방문
+                if(a[nx][ny] == 1 || a[nx][ny] == -1)continue; // 토마토 익음 || 토마토 없음 -> 방문X
 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= m || visited[nx][ny] != 0) continue; // 범위 || 방문
-
-                if (map[nx][ny] == 1 || map[nx][ny] == -1) continue; // 토마토 익음 || 토마토 없음 -> 방문X
-
-                if (map[nx][ny] == 0) { // 토마토 익지않음
-                    map[nx][ny] = 1; //  -> 토마토 익음
-                    
-                    q.add(new Data(nx, ny)); // -> push
-                    visited[nx][ny] = visited[x][y] + 1; // -> visit
+                if(a[nx][ny] == 0){
+                    a[nx][ny] = 1;
+                    visited[nx][ny] = visited[d.x][d.y] + 1;
+                    q.offer(new Data(nx, ny));
                 }
-
-
             }
-        }
-
-    }
-
-    static class Data {
-        int x;
-        int y;
-
-        public Data() {
-        }
-
-        public Data(int x, int y) {
-            this.x = x;
-            this.y = y;
         }
     }
 }
