@@ -1,6 +1,4 @@
-#include <iostream>
-#include <vector>
-#include <queue>
+#include <bits/stdc++.h>
 using namespace std;
 int n, m;
 int ind[32004];
@@ -16,7 +14,7 @@ int main(){
         cin >> f >> t;
 
         adj[f].push_back(t);
-        ind[t]++; // 노드 indegree++;
+        ind[t]++; // 해당 노드 indegree++
     }
 
     for(int i = 1; i <= n; i++){ 
@@ -31,10 +29,10 @@ int main(){
         
         for(int nextNode: adj[nowNode]){
             
-            ind[nextNode]--; // 해당 노드 indegree--;
+            ind[nextNode]--; // 해당 노드 indegree--
 
             if (ind[nextNode] == 0) {
-               q.push(nextNode);
+               q.push(nextNode); // indegree 0인 노드 -> queue에 넣기
             }
         }
     }
