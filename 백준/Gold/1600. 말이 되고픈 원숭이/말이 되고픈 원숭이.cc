@@ -1,26 +1,67 @@
-/*
-!!!더 빨리 오는 경우!!!
-{ 이동횟수, 능력사용횟수 }
-*/
-
-#include <iostream>
-#include <tuple>
-#include <queue>
+#include <bits/stdc++.h>
 using namespace std;
 const int dx[] = { -1, 0, 1, 0 };
-const int dy[] = { 0, 1, 0, -1 };
-const int hdx[] = { -1, -2, -2, -1, 1, 2, 2, 1 };
-const int hdy[] = { -2, -1, 1, 2, 2, 1, -1, -2 };
+const  int dy[] = { 0, 1, 0, -1 };
+const  int hx[] = { -1, -2, -2, -1, 1, 2, 2, 1 };
+const  int hy[] = { -2, -1, 1, 2, 2, 1, -1, -2 };
+struct A {
+	int x;
+	int y;
+	int d;
+	int kCnt;
+};
+queue<A> q;
+
 int k, n, m;
-int a[204][204];
-int visited[204][204][204];
-queue<pair<pair<int, int>, pair<int, int>>> q; //{{x, y}, {이동횟수, 능력사용횟수}}...
+int a[204][204], visited[204][204][34];
+
+int bfs() {
+	visited[0][0][0] = 1;
+	q.push({ 0, 0, 0, 0 });
+
+	while (!q.empty()) {
+		A now = q.front();
+		q.pop();
+
+		if (now.x == n - 1 && now.y == m - 1) {
+			return now.d;
+		}
+
+		if (now.kCnt < k) {
+			for (int i = 0; i < 8; i++) {
+				int nx = now.x + hx[i];
+				int ny = now.y + hy[i];
+
+				if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; // 범위
+				if (visited[nx][ny][now.kCnt + 1])continue; // 방문
+
+				if (a[nx][ny] == 1)continue; // 장애물
+
+				visited[nx][ny][now.kCnt + 1] = 1;
+				q.push({nx, ny, now.d + 1, now.kCnt + 1});
+			}
+		}
+
+		for (int i = 0; i < 4; i++) {
+			int nx = now.x + dx[i];
+			int ny = now.y + dy[i];
+
+			if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; // 범위
+			if (visited[nx][ny][now.kCnt])continue; // 방문
+
+			if (a[nx][ny] == 1)continue; // 장애물
+
+			visited[nx][ny][now.kCnt] = 1;
+			q.push({nx, ny, now.d + 1, now.kCnt});
+		}
+	}
+
+	return -1;
+}
 int main() {
 	ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 
-	cin >> k;
-
-	cin >> m >> n;
+	cin >> k >> m >> n;
 
 	for (int i = 0; i < n; i++) {
 		for (int j = 0; j < m; j++) {
@@ -28,56 +69,7 @@ int main() {
 		}
 	}
 
-	int sx = 0, sy = 0, ex = n - 1, ey = m - 1;
+	cout << bfs() << "\n";
 
-	visited[sx][sy][0] = 1;
-	q.push(make_pair(make_pair(sx, sy), make_pair(0, 0)));
-	while (q.size()) {
-		int x = q.front().first.first;
-		int y = q.front().first.second;
-		int cnt = q.front().second.first;
-		int ability = q.front().second.second;
-		q.pop();
-
-		// 도착
-		if (x == n - 1 && y == m - 1) {
-			// cout << "visited[x][y][ability] : " << visited[x][y][ability] - 1 << '\n';
-			cout << cnt << '\n';
-			return 0;
-		}
-
-		// 능력 사용 O
-		if (ability < k) {
-			for (int i = 0; i < 8; i++) {
-				int nx = x + hdx[i];
-				int ny = y + hdy[i];
-
-				if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; //범위
-
-				if (a[nx][ny] == 0 && visited[nx][ny][ability + 1] == 0) {
-
-					visited[nx][ny][ability + 1] = visited[x][y][ability] + 1; //[x][y] 가는데 ability씀
-
-					q.push(make_pair(make_pair(nx, ny), make_pair(cnt + 1, ability + 1)));
-				}
-			}
-		}
-		// 능력 사용 X
-		for (int i = 0; i < 4; i++) {
-			int nx = x + dx[i];
-			int ny = y + dy[i];
-
-			if (nx < 0 || nx >= n || ny < 0 || ny >= m)continue; //범위
-
-			if (a[nx][ny] == 0 && visited[nx][ny][ability] == 0) { //[x][y] 가는데 ability씀
-
-				visited[nx][ny][ability] = visited[x][y][ability] + 1;
-
-				q.push(make_pair(make_pair(nx, ny), make_pair(cnt + 1, ability)));
-			}
-		}
-	}
-
-	cout << -1 << '\n';
 	return 0;
 }
