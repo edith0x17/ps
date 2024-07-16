@@ -1,10 +1,12 @@
 import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main{
+
     static StringBuilder sb = new StringBuilder();
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 
-    static int n, ans;
+    static int n, ret;
     static boolean flag;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -12,24 +14,24 @@ public class Main{
         n = Integer.parseInt(br.readLine());
 
         while(true){
-            if(n < 0){ // 불가능한 경우
-                flag = true;
+
+            if(n < 0){
+                ret = -1;
                 break;
             }
 
-            // 5나누고 -> 안되면 -> 3빼주고
             if(n % 5 == 0){
-                ans += n / 5;
+                ret += n / 5;
                 break;
             }else{
-                n -= 3;
-                ans++;
+                n = n - 3;
+                ret++;
             }
         }
 
-        if(flag)sb.append(-1);
-        else sb.append(ans);
+//        if(!flag)ret = -1;
 
+        sb.append(ret);
         bw.write(sb + "");
         bw.flush();
         bw.close();
