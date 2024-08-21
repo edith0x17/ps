@@ -1,33 +1,30 @@
+#include <algorithm>
 #include <string>
 #include <vector>
-#include <algorithm>
-typedef long long ll;
 
 using namespace std;
 
 long long solution(int n, vector<int> times) {
-    ll answer = 0;
-    
+    long long answer = 0;
     sort(times.begin(), times.end());
-    
-    ll mi = 0;
-    ll mx = 1e18;
-    
-    while(mi <= mx){
-        ll mid = (mi + mx)/ 2;
-        
-        ll temp = 0;
-        for(int i = 0; i < times.size(); i++){
-            temp += (mid/ (ll)times[i]);
+
+    long long min = 1;
+    long long max = n * (long long)times.back();
+
+    while (min <= max) {
+
+        long long avg = (max + min) / 2;
+        long long tmp = 0;
+
+        for (int i = 0; i < times.size(); i++) {
+            tmp += (avg / (long long) times[i]);
         }
-        
-        if(temp >= n){
-            mx = mid -1;
-            answer = mid;
-        }else{
-            mi = mid + 1;
+
+        if (tmp >= n) {
+            max = avg - 1;
+            answer = avg;
         }
+        else min = avg + 1;
     }
-    
     return answer;
 }
