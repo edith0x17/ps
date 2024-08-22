@@ -1,42 +1,38 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
+#include <bits/stdc++.h>
 using namespace std;
-int n, mi = 2000000000;
-vector<int> v;
-int a, b;
-
+int mi = 2000000000;
+int n;
+vector<int> a;
+int ret1, ret2;
 int main() {
-	ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
-
+	ios_base::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
+	
 	cin >> n;
-
-	for(int i = 0; i < n; i++){
+	for (int i = 0; i < n; i++) {
 		int temp;
 		cin >> temp;
-		v.push_back(temp);
+
+		a.push_back(temp);
 	}
 
-	sort(v.begin(), v.end());
+	sort(a.begin(), a.end());
 
 	int l = 0, r = n - 1;
-	while(l < r){
-		
-		int sum = v[l] + v[r];
+	while (l < r) {
+	
+		int hap = a[l] + a[r];
+		if (abs(hap) < abs(mi)){
+			ret1 = a[l];
+			ret2 = a[r];
+			mi = hap;
+		}
 
-        if (mi > abs(sum)) {
-            mi = abs(sum);
+		if (hap == 0)break;
 
-            a = v[l];
-            b = v[r]; 
-
-            if (sum == 0)break;
-        }
-
-        if(sum < 0)l++;
-        else r--;
+		if (hap < 0)l++;
+		else r--;
 	}
 
-	cout << a << ' ' << b << '\n';
+	cout << ret1 << " " << ret2 << "\n";
 	return 0;
 }
