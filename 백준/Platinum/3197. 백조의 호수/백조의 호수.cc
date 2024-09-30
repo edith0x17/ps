@@ -24,7 +24,9 @@ bool moveSwan() {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
 			if (nx < 0 || nx >= r || ny < 0 || ny >= c || visitedSwan[nx][ny]) continue;
+
 			visitedSwan[nx][ny] = 1;
+
 			if (a[nx][ny] == '.') swanQ.push({ nx, ny });
 			else if (a[nx][ny] == 'X') swanTempQ.push({ nx, ny });
 			else if (a[nx][ny] == 'L') return true;
@@ -43,9 +45,11 @@ void waterMelt() {
 			int nx = x + dx[i];
 			int ny = y + dy[i];
 			if (nx < 0 || nx >= r || ny < 0 || ny >= c || visitedWater[nx][ny]) continue;
+
 			if (a[nx][ny] == 'X') {
-				visitedWater[nx][ny] = 1;
 				waterTempQ.push({ nx, ny });
+				visitedWater[nx][ny] = 1;
+
 				a[nx][ny] = '.';
 			}
 		}
