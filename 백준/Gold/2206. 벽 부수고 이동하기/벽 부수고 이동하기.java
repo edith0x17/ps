@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.StringTokenizer;
@@ -19,6 +21,8 @@ public class Main{
             this.cnt = cnt;
         }
     }
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
     static int n, m;
@@ -30,57 +34,54 @@ public class Main{
 
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-
         map = new int[n + 4][m + 4];
         visited = new boolean[n + 4][m + 4][2];
-
         for(int i = 0; i < n; i++){
             String s = br.readLine();
             for(int j = 0; j < m; j++){
                 map[i][j] = Integer.parseInt(String.valueOf(s.charAt(j)));
             }
         }
-
-        System.out.println(bfs());
+        int answer = bfs();
+        sb.append(answer);
+        bw.write(sb + "");
+        bw.flush();
+        bw.close();
     }
-
     static int bfs(){
         Queue<Data> q = new ArrayDeque<>();
-
         visited[0][0][0] = true;
         q.offer(new Data(0, 0, false, 1)); // 시작위치 포함 & 끝위치 포함
         while(!q.isEmpty()){
             Data d = q.peek();
             q.poll();
 
+            // 도착
             if(d.x == n - 1 && d.y == m - 1)return d.cnt;
 
             for(int i = 0; i < 4; i++){
                 int nx = d.x + dx[i];
                 int ny = d.y + dy[i];
-
                 if(nx < 0 || nx >= n || ny < 0 || ny >= m)continue;
 
-               if(map[nx][ny] == 1){ // 벽 O
-                   if(d.breakWall)continue;
-
-                   if(visited[nx][ny][1])continue;
-                   visited[nx][ny][1] = true;
-                   q.offer(new Data(nx, ny, true, d.cnt + 1));
-               }else{ // 벽 X
-                    if(!d.breakWall){ // 부수지 않은 경우
-                        if(visited[nx][ny][0])continue;
-                        visited[nx][ny][0] = true;
-                        q.offer(new Data(nx, ny, false, d.cnt + 1));
-                    }else{ // 부순 경우
+                if(map[nx][ny] == 1){ // 벽 O
+                    if(d.breakWall)continue;
+                    if(visited[nx][ny][1])continue;
+                    visited[nx][ny][1] = true;
+                    q.offer(new Data(nx, ny, true, d.cnt + 1));
+                }else{ // 벽 X
+                    if(d.breakWall){ // 부순 경우
                         if(visited[nx][ny][1])continue;
                         visited[nx][ny][1] = true;
                         q.offer(new Data(nx, ny, true, d.cnt + 1));
+                    }else{ // 부수지 경우
+                        if(visited[nx][ny][0])continue;
+                        visited[nx][ny][0] = true;
+                        q.offer(new Data(nx, ny, false, d.cnt + 1));
                     }
-               }
+                }
             }
         }
-
         return -1;
     }
 }
