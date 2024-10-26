@@ -1,54 +1,49 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.Buffer;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int n, m;
-    static int[] ind = new int[32004];
-    static ArrayList<Integer>[] adj;
-    static Queue<Integer> q = new ArrayDeque<>();
+
+    static StringBuilder sb = new StringBuilder();
+    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int[] ind;
 
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
 
-        adj = new ArrayList[n + 4]; // 리스트
-        for (int i = 0; i < n + 4; i++) { // 리스트 안에 리스트
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        int n = Integer.parseInt(st.nextToken());
+        int m = Integer.parseInt(st.nextToken());
+        ArrayList<Integer>[] adj = new ArrayList[n + 1];
+        for (int i = 0; i < n + 1; i++) {
             adj[i] = new ArrayList<>();
         }
-
+        ind = new int[n + 1];
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            int t = Integer.parseInt(st.nextToken());
             int f = Integer.parseInt(st.nextToken());
-
-            adj[t].add(f);
-            ind[f]++;
+            int t = Integer.parseInt(st.nextToken());
+            adj[f].add(t);
+            ind[t]++;
         }
-
         for (int i = 1; i <= n; i++) {
-            if (ind[i] == 0) q.add(i);
+            if (ind[i] == 0) {
+                pq.offer(i);
+            }
         }
+        while (!pq.isEmpty()) {
+            int here = pq.poll();
+            sb.append(here + " ");
 
-        while (!q.isEmpty()) {
-            int nowNode = q.poll(); // front, pop
-            System.out.printf("%d ", nowNode);
-            for (int nextNode : adj[nowNode]) {
-                ind[nextNode]--;
-
-                if (ind[nextNode] == 0) {
-                    q.add(nextNode);
+            for (int there : adj[here]) {
+                ind[there]--;
+                if (ind[there] == 0) {
+                    pq.offer(there);
                 }
             }
         }
-
+        bw.write(sb + " ");
+        bw.flush();
+        bw.close();
     }
 }
