@@ -1,3 +1,5 @@
+// a[i][j - 1] -> 행
+// a[i - 1][j] -> 열
 import java.io.*;
 import java.util.*;
 
