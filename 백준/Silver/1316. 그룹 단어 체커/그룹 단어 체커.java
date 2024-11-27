@@ -7,22 +7,24 @@ public class Main{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
         for(int i = 0; i < n; i++){
-            boolean flag = false;
             String s = br.readLine();
-            int[] a = new int[26];
+            boolean flag = false;
             char prev = 'A';
+            int[] a = new int[26];
             for(int j = 0; j < s.length(); j++){
-                if(prev == s.charAt(j))continue;
-                else{
+                if(prev == s.charAt(j)){// prev
+                    continue;
+                }else{// aba
                     if(a[s.charAt(j) - 'a'] >= 1){
                         flag = true;
                         break;
-                    }else a[s.charAt(j) - 'a']++;
+                    }else{
+                        a[s.charAt(j) - 'a']++;
+                    }
                 }
                 prev = s.charAt(j);
             }
             if(!flag){
-//                System.out.println(s);
                 answer++;
             }
         }
