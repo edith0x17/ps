@@ -16,7 +16,7 @@ public class Main{
             return this.s - o.s;
         }
     }
-    static int n, answer;
+    static int n;
     static PriorityQueue<Data> pq = new PriorityQueue<>();
     static PriorityQueue<Integer> room = new PriorityQueue<>();
     public static void main(String[] args) throws IOException{
@@ -29,14 +29,14 @@ public class Main{
             int t = Integer.parseInt(st.nextToken());
             pq.offer(new Data(s, t));
         }
-        room.offer(0);
+        room.offer(0);// 끝 저장
         while(!pq.isEmpty()){
             Data data = pq.poll();
-            if(room.peek() <= data.s){
+            if(room.peek() <= data.s){// 끝(room) <= 끝(pq), 끝 업데이트
                 int temp = room.poll();
                 temp = data.t;
                 room.offer(temp);
-            }else{
+            }else{// 끝(pq) 삽입
                 room.offer(data.t);
             }
         }
