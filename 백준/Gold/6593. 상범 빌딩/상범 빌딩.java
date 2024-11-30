@@ -65,6 +65,10 @@ public class Main {
             Data here = q.poll();
             int x = here.x, y = here.y, z = here.z;
 
+            if (map[x][y][z] == 'E') { // 출구 발견
+                return visited[x][y][z] - 1;
+            }
+
             for (int i = 0; i < 6; i++) {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
@@ -72,9 +76,9 @@ public class Main {
 
                 if (nx < 0 || ny < 0 || nz < 0 || nx >= l || ny >= r || nz >= c) continue; // 범위 초과
                 if (map[nx][ny][nz] == '#' || visited[nx][ny][nz] > 0) continue; // 벽이거나 이미 방문
-                if (map[nx][ny][nz] == 'E') { // 출구 발견
-                    return visited[x][y][z];
-                }
+//                if (map[nx][ny][nz] == 'E') { // 출구 발견
+//                    return visited[x][y][z];
+//                }
 
                 visited[nx][ny][nz] = visited[x][y][z] + 1;
                 q.offer(new Data(nx, ny, nz));
