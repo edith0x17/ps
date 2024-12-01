@@ -24,7 +24,7 @@ public class Main{
 
             d[gearN] = turn;
             checkDir(gearN);
-            gearTurn();
+            turnGear();
         }
         int ans =0;
         if(gear[0][0] == 1) ans+=1;
@@ -35,34 +35,33 @@ public class Main{
     }
     static void checkDir(int gearN){
         // left
-        for(int i = gearN - 1; i >= 0; i--){// 다음꺼 기준
+        for(int i = gearN - 1; i >= 0; i--){
             if(gear[i][2] != gear[i + 1][6]){
-                d[i] = -d[i + 1];
+                d[i] = d[i + 1] * -1;
             }else{
                 break;
             }
         }
         // right
-        for(int i = gearN + 1; i < 4; i++){// 다음꺼 기준
+        for(int i = gearN + 1; i < 4; i++){
             if(gear[i][6] != gear[i - 1][2]){
-                d[i] = -d[i - 1];
+                d[i] = d[i - 1] * -1;
             }else{
                 break;
             }
         }
     }
-    static void gearTurn(){
-        int temp = 0;
+    static void turnGear(){
         for(int i = 0; i < 4; i++){
-            if(d[i] == 1){
-                temp = gear[i][7];
+            if(d[i] == 1){// 시계
+                int temp = gear[i][7];
                 for(int j = 7; j > 0; j--){
-                    gear[i][j] = gear[i][j - 1];// 뒤 -> 앞
+                    gear[i][j] = gear[i][j - 1];
                 }
                 gear[i][0] = temp;
             }
-            if(d[i] == -1){
-                temp = gear[i][0];
+            else if(d[i] == -1){// 반시계
+                int temp = gear[i][0];
                 for(int j = 0; j < 7; j++){
                     gear[i][j] = gear[i][j + 1];
                 }
