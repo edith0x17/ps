@@ -20,7 +20,7 @@ public class Main{
 
         // finally
         if(exponent % 2 == 1){
-            return ((temp * temp % C) * (base % C)) % C;
+            return ((((temp % C) * (temp % C)) % C) * (base % C)) % C;
         }
         return ((temp % C) * (temp % C)) % C;
     }
