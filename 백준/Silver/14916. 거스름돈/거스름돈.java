@@ -6,15 +6,20 @@ public class Main{
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
-        while(n > 0){
+        while(true){
+            if(n < 0){
+                answer = -1;
+                break;
+            }
+
             if(n % 5 == 0){
                 answer += n / 5;
                 break;
+            }else{
+                n = n - 2;
+                answer++;
             }
-            n -= 2;
-            answer++;
         }
-        if(n >= 0) System.out.println(answer);
-        else System.out.println(-1);
+        System.out.println(answer);
     }
 }
