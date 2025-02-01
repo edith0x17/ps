@@ -39,7 +39,7 @@ public class Main {
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     if (visited[i][j]) continue;
-                    ArrayList<Data> ret = bfs(i, j);
+                    ArrayList<Data> ret = dfs(i, j);
                     if (ret.size() > 1) { // 연합이 형성된 경우만
                         flag = true;
                         int sum = 0;
@@ -59,6 +59,26 @@ public class Main {
         bw.write(sb+ "");
         bw.flush();
         bw.close();
+    }
+
+    static ArrayList<Data> dfs(int x, int y) {
+        ArrayList<Data> ret = new ArrayList<>();
+
+        visited[x][y] = true;
+        ret.add(new Data(x, y)); // ✅ 현재 위치를 먼저 추가
+
+        for (int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if (nx < 0 || nx >= n || ny < 0 || ny >= n || visited[nx][ny]) continue;
+            int temp = Math.abs(map[x][y] - map[nx][ny]);
+
+            if (l <= temp && temp <= r) {
+                ret.addAll(dfs(nx, ny)); // ✅ 재귀 호출을 통해 연결된 모든 위치 추가
+            }
+        }
+        return ret;
     }
 
     static ArrayList<Data> bfs(int x, int y) {
