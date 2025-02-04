@@ -16,7 +16,7 @@ public class Main{
     static StringBuilder sb = new StringBuilder();
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static int n;
-    static ArrayList<Data> adj = new ArrayList<>();
+    static PriorityQueue<Data> pq = new PriorityQueue<>();
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(br.readLine());
@@ -24,13 +24,14 @@ public class Main{
         for(int i = 0; i < n; i++){
             st = new StringTokenizer(br.readLine());
             for(int j = 0; j < n; j++){
-                adj.add(new Data(Integer.parseInt(st.nextToken())));
+                pq.add(new Data(Integer.parseInt(st.nextToken())));
             }
         }
-        Collections.sort(adj);
         int cnt = 0;
-        for(Data data: adj){
+        Data data = null;
+        while(!pq.isEmpty()){
             cnt++;
+            data = pq.poll();
             if(cnt == n)sb.append(data.i);
         }
         bw.write(sb + "");
