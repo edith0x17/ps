@@ -1,7 +1,6 @@
-SELECT i.NAME, i.DATETIME
-FROM ANIMAL_INS i
-LEFT JOIN ANIMAL_OUTS o
-ON i.ANIMAL_ID = o.ANIMAL_ID
-where o.DATETIME is null
-order by i.DATETIME asc
+select ai.NAME, ai.DATETIME
+from animal_ins ai
+left join animal_outs ao on ai.animal_id = ao.animal_id
+where ao.animal_id is null
+order by ai.datetime asc
 limit 3;
