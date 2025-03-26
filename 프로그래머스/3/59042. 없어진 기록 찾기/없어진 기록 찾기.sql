@@ -1,5 +1,5 @@
-select o.ANIMAL_ID, o.NAME
-from ANIMAL_OUTS o 
-left outer join ANIMAL_INS i ON o.ANIMAL_ID = i.ANIMAL_ID
-where i.ANIMAL_ID is null
-order by o.ANIMAL_ID asc; 
+select ao.animal_id, ao.name
+from animal_outs ao
+left outer join animal_ins ai on ao.animal_id = ai.animal_id
+where ai.animal_id is null
+order by ao.animal_id asc;
