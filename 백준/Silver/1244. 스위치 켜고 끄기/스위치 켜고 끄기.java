@@ -1,60 +1,51 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int n;
+    static int n, m;
     static boolean[] a;
-    static int m;
-    static int flag, idx;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
 
         n = Integer.parseInt(br.readLine());
+        a = new boolean[n + 1]; // 1-based index
 
-        a = new boolean[n + 1];
-        StringTokenizer st = new StringTokenizer(br.readLine());
+        st = new StringTokenizer(br.readLine());
         for (int i = 1; i <= n; i++) {
-            int temp = Integer.parseInt(st.nextToken());
-            a[i] = temp == 1;
+            a[i] = st.nextToken().equals("1");
         }
 
         m = Integer.parseInt(br.readLine());
+
         for (int i = 0; i < m; i++) {
             st = new StringTokenizer(br.readLine());
-            flag = Integer.parseInt(st.nextToken());
-            idx = Integer.parseInt(st.nextToken());
+            int sex = Integer.parseInt(st.nextToken());
+            int num = Integer.parseInt(st.nextToken());
 
-            go(flag, idx);
+            if (sex == 1) { // 남학생
+                for (int j = num; j <= n; j += num) {
+                    a[j] = !a[j];
+                }
+            } else { // 여학생
+                a[num] = !a[num];
+                int l = num - 1;
+                int r = num + 1;
+                while (l >= 1 && r <= n && a[l] == a[r]) {
+                    a[l] = !a[l];
+                    a[r] = !a[r];
+                    l--;
+                    r++;
+                }
+            }
         }
-        
+
+        StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= n; i++) {
-            System.out.print(a[i] ? "1 " : "0 ");
-            if (i % 20 == 0) System.out.println();
+            sb.append(a[i] ? "1 " : "0 ");
+            if (i % 20 == 0) sb.append("\n");
         }
-    }
-
-    static void go(int flag, int idx) {
-        if (flag == 1) { // 남자
-            for (int i = idx; i <= n; i++) {
-                if((i % idx) == 0){
-                    a[i] = !a[i];
-                }
-            }
-        } else { // 여자
-            a[idx] = !a[idx];
-            int i = 1;
-            while (idx - i >= 1 && idx + i <= n) {
-                if (a[idx - i] == a[idx + i]) {
-                    a[idx - i] = !a[idx - i];
-                    a[idx + i] = !a[idx + i];
-                } else {
-                    break;
-                }
-                i++;
-            }
-        }
+        System.out.println(sb);
     }
 }
