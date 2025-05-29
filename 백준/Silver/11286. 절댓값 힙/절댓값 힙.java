@@ -1,51 +1,34 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Comparator;
-import java.util.PriorityQueue;
+import java.io.*;
+import java.util.*;
 
 public class Main {
+    static PriorityQueue<Data> pq = new PriorityQueue<>();
 
-	public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int n = Integer.parseInt(br.readLine());
+        while (n-- > 0) {
+            int x = Integer.parseInt(br.readLine());
+            if (x == 0) {
+                if (pq.isEmpty()) System.out.println(0);
+                else System.out.println(pq.poll().num);
+            } else {
+                pq.offer(new Data(x));
+            }
+        }
+    }
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int n = Integer.parseInt(br.readLine());
-		PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> {
-			int abs1 = Math.abs(o1);
-			int abs2 = Math.abs(o2);
+    static class Data implements Comparable<Data> {
+        int num;
 
-			if (abs1 == abs2)
-				return o1 - o2;
-			return abs1 - abs2;
-		});
+        public Data(int num) {
+            this.num = num;
+        }
 
-		while (n-- != 0) {
-			int temp = Integer.parseInt(br.readLine());
-			if (temp == 0) {
-				if (pq.isEmpty()) System.out.println(0);
-				else System.out.println(pq.poll());
-			} else {
-				pq.offer(temp);
-			}
-		}
-	}
+        @Override
+        public int compareTo(Data o) {
+            if (Math.abs(this.num) == Math.abs(o.num)) return Integer.compare(this.num, o.num); // 오름차순
+            return Integer.compare(Math.abs(this.num), Math.abs(o.num)); // 오름차순
+        }
+    }
 }
-
-//class Data implements Comparator<Data> {
-//
-//	int num;
-//
-//	public Data(int num) {
-//		super();
-//		this.num = num;
-//	}
-//
-//	@Override
-//	public int compare(Data o1, Data o2) {
-//		if (Math.abs(o1.num) == Math.abs(o2.num)) {
-//			return o1.num - o2.num;
-//		}
-//		return Math.abs(o1.num) - Math.abs(o2.num);
-//	}
-//
-//}
