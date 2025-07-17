@@ -2,10 +2,10 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static final int max_n = 500_000;
+    static final int max = 500_000;
     static int n, k, turn = 1;
-    static int[][] visited = new int[2][max_n + 4];
     static Queue<Integer> q = new ArrayDeque<>();
+    static int[][] visited = new int[2][max + 4];
     static boolean flag;
 
     public static void main(String[] args) throws IOException {
@@ -13,7 +13,8 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
-        if (n == k) {
+
+        if (n == k) { // 조건1
             System.out.println(0);
             return;
         }
@@ -23,29 +24,30 @@ public class Main {
         while (!q.isEmpty()) {
             k += turn;
 
-            if (k > max_n) break;
+            if (k > max) break; // 조건2
 
-            if (visited[turn % 2][k] != 0) {
+            if (visited[turn % 2][k] != 0) { // 조건3 먼저 방문
                 flag = true;
                 break;
             }
 
             int qSize = q.size();
             for (int i = 0; i < qSize; i++) {
-                int x = q.poll();
-                for (int nx : new int[]{x - 1, x + 1, x * 2}) {
-                    if (nx < 0 || nx > max_n || visited[turn % 2][nx] != 0) continue; // 범위 || 방문
-                    visited[turn % 2][nx] = visited[(turn + 1) % 2][x] + 1; // 현재 <-> 이전
+                int now = q.poll();
+                for (int next : new int[]{now - 1, now + 1, now * 2}) {
+                    if (next < 0 || next > max || visited[turn % 2][next] != 0) continue; // 범위 || 방문
+                    visited[turn % 2][next] = visited[(turn + 1) % 2][now] + 1; // 방문
 
-                    if (nx == k) {
+                    if (next == k) { // 조건4 방문
                         flag = true;
                         break;
                     }
 
-                    q.offer(nx);
+                    q.offer(next);
                 }
                 if (flag) break;
             }
+
             if (flag) break;
             turn++;
         }
