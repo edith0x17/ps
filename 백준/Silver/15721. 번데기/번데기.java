@@ -14,25 +14,24 @@ public class Main {
         c = Integer.parseInt(br.readLine());
         if (c == 0) ch = 'A';
         else ch = 'B';
-        int p = 0;  // 사람 번호
-
+        int p = 0;
         while (true) {
             String s = "ABAB";
-            for (int i = 0; i < n + 1; i++) s += "A";
-            for (int i = 0; i < n + 1; i++) s += "B";
-
+            for (int i = 1; i <= n + 1; i++) {
+                s += "A";
+            }
+            for (int i = 1; i <= n + 1; i++) {
+                s += "B";
+            }
             for (int i = 0; i < s.length(); i++) {
-                if (s.charAt(i) == ch) {
-                    cnt++;
-                    if (cnt == t) {
-                        System.out.println(p);
-                        return;
-                    }
+                if (s.charAt(i) == ch) cnt++;
+                if (cnt == t) {
+                    System.out.println(p);
+                    return;
                 }
                 p++;
                 if (p >= a) p = 0;
             }
-
             n++;
         }
     }
