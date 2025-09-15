@@ -1,14 +1,6 @@
-# select month(START_DATE) as MONTH, CAR_ID, count(CAR_ID) as RECORDS
-# from CAR_RENTAL_COMPANY_RENTAL_HISTORY
-# where 8 <= month(START_DATE) and month(START_DATE) <= 10
-# group by month(START_DATE), CAR_ID
-# having 5 <= count(CAR_ID)
-# order by MONTH asc, CAR_ID desc;
-
-SELECT 
-    MONTH(START_DATE) AS MONTH,
-    CAR_ID,
-    COUNT(*) AS RECORDS
+# SQL에서 GROUP BY + COUNT(*)을 사용하면, “기록이 존재하는 데이터만 그룹화된다”.
+# 즉, 0건인 경우는 애초에 집계 테이블에 안 생깁니다.
+SELECT MONTH(START_DATE) AS MONTH, CAR_ID, COUNT(*) AS RECORDS
 FROM CAR_RENTAL_COMPANY_RENTAL_HISTORY
 WHERE START_DATE BETWEEN '2022-08-01' AND '2022-10-31'
   AND CAR_ID IN (
