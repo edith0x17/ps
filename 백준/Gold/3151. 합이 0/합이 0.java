@@ -23,8 +23,6 @@ public class Main {
                 int mx = upperBound(a, sum, j + 1, n);
                 int mi = lowerBound(a, sum, j + 1, n);
                 int cnt = mx - mi;
-                if (mi <= i && i < mx) cnt--;
-                if (mi <= j && j < mx) cnt--;
                 answer += cnt;
             }
         }
