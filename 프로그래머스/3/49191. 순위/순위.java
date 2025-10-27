@@ -24,7 +24,7 @@ class Solution {
             visited = new boolean[n + 1];
             int a = dfs(i, adj) - 1;
             int b = dfs(i, rev) - 1;
-            if(a + b >= n - 1)answer++;
+            if (a + b == n - 1) answer++;
         }
         return answer;
     }
