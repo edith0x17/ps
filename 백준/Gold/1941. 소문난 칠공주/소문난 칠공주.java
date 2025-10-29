@@ -1,11 +1,10 @@
 import java.io.*;
-import java.sql.Array;
 import java.util.*;
 
 public class Main {
     static final int[] dx = {-1, 0, 1, 0};
     static final int[] dy = {0, 1, 0, -1};
-    static char[][] map = new char[5][5];
+    static int[][] map = new int[5][5]; //1-> , 0->
     static int[] ret = new int[7];
     static int answer;
 
@@ -14,7 +13,8 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             String s = br.readLine();
             for (int j = 0; j < 5; j++) {
-                map[i][j] = s.charAt(j);
+                if (s.charAt(j) == 'S') map[i][j] = 1;
+                else map[i][j] = 0;
             }
         }
         combi(0, 0);
@@ -22,30 +22,30 @@ public class Main {
     }
 
     static void go() {
-        boolean[][] selected = new boolean[5][5];
+        boolean[][] temp = new boolean[5][5];
         for (int idx : ret) {
-            selected[idx / 5][idx % 5] = true;
+            temp[idx / 5][idx % 5] = true;
         }
 
-        Queue<int[]> q = new ArrayDeque<>();
         boolean[][] visited = new boolean[5][5];
-        int sx = ret[0] / 5, sy = ret[0] % 5, cnt = 1, sCnt = 0;
-        if (map[sx][sy] == 'S') sCnt++;
+        Queue<Data> q = new ArrayDeque<>();
+        int sx = ret[0] / 5, sy = ret[0] % 5;
+        int cnt = 1, sCnt = 0;
+        if (map[sx][sy] == 1) sCnt++;
         visited[sx][sy] = true;
-        q.offer(new int[]{sx, sy});
+        q.offer(new Data(sx, sy));
         while (!q.isEmpty()) {
-            int[] here = q.poll();
-
+            Data data = q.poll();
             for (int i = 0; i < 4; i++) {
-                int nx = here[0] + dx[i];
-                int ny = here[1] + dy[i];
+                int nx = data.x + dx[i];
+                int ny = data.y + dy[i];
                 if (nx < 0 || nx >= 5 || ny < 0 || ny >= 5) continue; //범위
                 if (visited[nx][ny]) continue; //방문
-                if (!selected[nx][ny]) continue; //장애물
+                if (!temp[nx][ny]) continue;//장애물
                 cnt++;
-                if (map[nx][ny] == 'S') sCnt++;
+                if (map[nx][ny] == 1) sCnt++;
                 visited[nx][ny] = true;
-                q.offer(new int[]{nx, ny});
+                q.offer(new Data(nx, ny));
             }
         }
         if (cnt == 7 && sCnt >= 4) answer++;
@@ -53,13 +53,21 @@ public class Main {
 
     static void combi(int depth, int start) {
         if (depth == 7) {
-            go(); //ret -> 7 && x >= 4
+            go();
             return;
         }
-
         for (int i = start; i < 25; i++) {
             ret[depth] = i;
             combi(depth + 1, i + 1);
+        }
+    }
+
+    static class Data {
+        int x, y;
+
+        public Data(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
     }
 }
