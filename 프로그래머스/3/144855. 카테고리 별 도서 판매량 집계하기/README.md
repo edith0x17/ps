@@ -1,6 +1,6 @@
 # [level 3] 카테고리 별 도서 판매량 집계하기 - 144855 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/144855#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/144855) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2025년 05월 14일 14:13:04
+2025년 10월 29일 15:44:15
 
 ### 문제 설명
 
