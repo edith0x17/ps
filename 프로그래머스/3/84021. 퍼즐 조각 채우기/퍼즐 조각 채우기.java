@@ -9,34 +9,36 @@ class Solution {
     static boolean[][] visited;
     public int solution(int[][] game_board, int[][] table) {
         n = game_board.length;
-        visited = new boolean[n][n];
         List<List<Data>> emptySpaces = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if(game_board[i][j] == 0 && !visited[i][j]){ //
-                    emptySpaces.add(extractShape(i, j, game_board, 0));
+        visited = new boolean[n][n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(game_board[i][j] == 0 && !visited[i][j]){
+                    emptySpaces.add(extractSpaces(i, j, game_board, 0));
                 }
             }
         }
-        visited = new boolean[n][n];
         List<List<Data>> puzzlePieces = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if(table[i][j] == 1 && !visited[i][j]){ //
-                    puzzlePieces.add(extractShape(i, j, table, 1));
+        visited = new boolean[n][n];
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(table[i][j] == 1 && !visited[i][j]){
+                    puzzlePieces.add(extractSpaces(i, j, table, 1));
                 }
             }
         }
         int answer = 0;
         boolean[] used = new boolean[puzzlePieces.size()];
-        for(List<Data> space: emptySpaces){ //빈 공간들 <- 퍼즐들
-            for (int i = 0; i < puzzlePieces.size(); i++) {
+        for(List<Data> emptySpace :emptySpaces){
+            //emptySpace <- puzzlePieces
+            for(int i = 0; i < puzzlePieces.size(); i++){
                 if(used[i])continue;
-                List<Data> piece = puzzlePieces.get(i);
-                for(int rot = 0; rot < 4; rot++){
-                    piece = rotate(piece);
-                    if(check(space, piece)){
-                        answer += piece.size();
+                
+                List<Data> puzzlePiece = puzzlePieces.get(i);
+                for(int d = 0; d < 4; d++){
+                    puzzlePiece = rotate(puzzlePiece);
+                    if(check(emptySpace, puzzlePiece)){
+                        answer += puzzlePiece.size();
                         used[i] = true;
                         break;
                     }
@@ -47,65 +49,65 @@ class Solution {
         return answer;
     }
     
-    static List<Data> normalize(List<Data> shape){
-        ArrayList<Data> norm = new ArrayList<>();
+    static boolean check(List<Data> a, List<Data> b){
+        if(a.size() != b.size())return false;
+        for(int i = 0; i < a.size(); i++){
+            if((a.get(i).x != b.get(i).x) || a.get(i).y != b.get(i).y)return false;
+        }
+        return true;
+    }
+    
+    static List<Data> rotate(List<Data> adj){
+        List<Data> rotated = new ArrayList<>();
+        for(Data d: adj){
+            rotated.add(new Data(d.y, -d.x));
+        }
+        return normalize(rotated);
+    }
+    
+    static List<Data> normalize(List<Data> adj){
+        List<Data> norm = new ArrayList<>();
         int minX = Integer.MAX_VALUE, minY = Integer.MAX_VALUE;
-        for(Data d: shape){
+        for(Data d: adj){
             minX = Math.min(minX, d.x);
             minY = Math.min(minY, d.y);
         }
-        for(Data d: shape){
+        for(Data d: adj){
             norm.add(new Data(d.x - minX, d.y - minY));
         }
-        Collections.sort(norm);
+        Collections.sort(norm); //
         return norm;
     }
     
-    static List<Data> extractShape(int x, int y, int[][] board, int target){
-        List<Data> shape = new ArrayList<>();
+    static List<Data> extractSpaces(int x, int y, int[][] board, int target){
+        List<Data> adj = new ArrayList<>();
+        adj.add(new Data(x, y));
         Queue<Data> q = new ArrayDeque<>();
         visited[x][y] = true;
         q.offer(new Data(x, y));
         while(!q.isEmpty()){
             Data data = q.poll();
-            shape.add(data); //추가
             for(int i = 0; i < 4; i++){
                 int nx = data.x + dx[i];
                 int ny = data.y + dy[i];
                 if(nx < 0 || nx >= n || ny < 0 || ny >= n)continue; //범위
                 if(visited[nx][ny])continue; //방문
-                if(board[nx][ny] == target){ //장애물
-                    visited[nx][ny] = true;
-                    q.offer(new Data(nx, ny));
-                }
-
+                if(board[nx][ny] != target)continue; //장애물
+                adj.add(new Data(nx, ny));
+                visited[nx][ny] = true;
+                q.offer(new Data(nx, ny));
             }
         }
-        return normalize(shape);
+        return normalize(adj);
     }
-    
-    static List<Data> rotate(List<Data> shape) {
-        List<Data> rotated = new ArrayList<>();
-        for (Data d : shape) {
-            rotated.add(new Data(d.y, -d.x)); //(x, y) -> (y, -x)
-        }
-        return normalize(rotated);
-    }
-    
-    static boolean check(List<Data> a, List<Data> b){
-        if(a.size() != b.size())return false;
-        for (int i = 0; i < a.size(); i++) {
-            if (a.get(i).x != b.get(i).x || a.get(i).y != b.get(i).y) return false;
-        }
-        return true;
-    }
-    
     static class Data implements Comparable<Data>{
         int x, y;
+        
         Data(int x, int y){
             this.x = x;
             this.y = y;
         }
+        
         @Override
         public int compareTo(Data o){
             if(this.x == o.x)return Integer.compare(this.y, o.y);
