@@ -1,6 +1,6 @@
 # [level 2] 자동차 종류 별 특정 옵션이 포함된 자동차 수 구하기 - 151137 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/151137#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/151137) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@ Empty
 
 ### 제출 일자
 
-2025년 04월 24일 20:21:33
+2025년 10월 29일 15:34:37
 
 ### 문제 설명
 
