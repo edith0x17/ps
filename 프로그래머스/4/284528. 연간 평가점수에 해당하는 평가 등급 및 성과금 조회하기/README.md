@@ -1,6 +1,6 @@
 # [level 4] 연간 평가점수에 해당하는 평가 등급 및 성과금 조회하기 - 284528 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/284528#qna) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/284528) 
 
 ### 성능 요약
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 10월 30일 13:45:40
+2025년 10월 30일 20:16:47
 
 ### 문제 설명
 
