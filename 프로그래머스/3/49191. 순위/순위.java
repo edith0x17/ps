@@ -1,33 +1,38 @@
+//6 -> 
 import java.io.*;
 import java.util.*;
 
 class Solution {
     static ArrayList<Integer>[] adj, rev;
     static boolean[] visited;
+    static int answer = 0;
     public int solution(int n, int[][] results) {
         adj = new ArrayList[n + 1];
         for(int i = 0; i < n + 1; i++){
-            adj[i] = new ArrayList<>();   
+            adj[i] = new ArrayList<>();
         }
         rev = new ArrayList[n + 1];
         for(int i = 0; i < n + 1; i++){
-            rev[i] = new ArrayList<>();           
+            rev[i] = new ArrayList<>();
         }
         for(int i = 0; i < results.length; i++){
             int f = results[i][0];
             int t = results[i][1];
-            adj[t].add(f);
-            rev[f].add(t);
+            
+            adj[f].add(t);
+            rev[t].add(f);
         }
-        int answer = 0;
-        for(int i = 1; i <= n; i++){
+        
+        for(int i = 1; i < n + 1; i++){
             visited = new boolean[n + 1];
             int a = dfs(i, adj) - 1;
             int b = dfs(i, rev) - 1;
-            if (a + b == n - 1) answer++;
+            System.out.println(a + " " + b);
+            if(a + b == n - 1)answer++;
         }
         return answer;
     }
+    
     static int dfs(int here, ArrayList<Integer>[] graph){
         int ret = 1;
         visited[here] = true;
