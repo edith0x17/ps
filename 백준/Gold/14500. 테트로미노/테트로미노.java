@@ -35,7 +35,6 @@ public class Main{
             answer = Math.max(answer, sum);
             return;
         }
-        visited[x][y] = true;
         for(int i = 0; i < 4; i++){
             int nx = x + dx[i];
             int ny = y + dy[i];
