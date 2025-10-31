@@ -1,26 +1,31 @@
-#46
-WITH RECURSIVE gens AS (
-  -- 1) Anchor member (시작 부분, 최초 실행)
-  -- 🔹 1세대: 부모가 없는 개체 (최초 개체)
-  SELECT id, 1 AS gen
-  FROM ecoli_data
-  WHERE parent_id IS NULL
-
-  UNION ALL
-
-  -- 2) Recursive member (자기 자신을 참조해서 반복 실행)
-  -- 🔸 재귀적으로 자식 찾기: 자식은 부모보다 세대가 +1
-  SELECT e.id, g.gen + 1
-  FROM ecoli_data e
-  INNER JOIN gens g ON e.parent_id = g.id
-), 
-children AS (
-  SELECT a.id AS parent, b.id AS child
-  FROM ecoli_data a
-  LEFT JOIN ecoli_data b ON a.id = b.parent_id
+#31
+WITH RECURSIVE GENS AS (
+    #START
+    SELECT ID, 1 AS GEN
+    FROM ECOLI_DATA
+    WHERE PARENT_ID IS NULL
+    
+    UNION ALL
+    
+    #RECURSIVE
+    SELECT E.ID, G.GEN + 1
+    FROM ECOLI_DATA E
+    JOIN GENS G ON E.PARENT_ID = G.ID
+),
+CHILDREN AS (
+    SELECT A.ID AS PARENT, B.ID AS CHILD
+    FROM ECOLI_DATA A
+    LEFT JOIN ECOLI_DATA B ON A.ID = B.PARENT_ID
 )
-SELECT COUNT(*) as count, g.gen as generation
-FROM gens g
-LEFT JOIN children c ON g.id = c.parent
-WHERE c.child IS NULL
-GROUP BY g.gen;
+
+# SELECT *
+# FROM GENS
+
+# SELECT *
+# FROM CHILDREN
+
+SELECT COUNT(*) AS COUNT, G.GEN AS GENERATION
+FROM GENS G
+LEFT JOIN CHILDREN C ON G.ID = C.PARENT
+WHERE C.CHILD IS NULL
+GROUP BY G.GEN
