@@ -9,7 +9,6 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-
         Data[][] map = new Data[4][4];
         for (int i = 0; i < 4; i++) {
             st = new StringTokenizer(br.readLine());
@@ -19,13 +18,11 @@ public class Main {
                 map[i][j] = new Data(num, dir);
             }
         }
-
-        // 상어가 (0,0)의 물고기 먹고 시작
         Data first = map[0][0];
         int sum = first.num;
         int initDir = first.dir;
+        map[0][0] = null;
 
-        map[0][0] = null; // 상어가 먹음 → 빈칸 처리
         dfs(map, 0, 0, initDir, sum);
 
         System.out.println(answer);
@@ -34,10 +31,8 @@ public class Main {
     static void dfs(Data[][] map, int sx, int sy, int sDir, int total) {
         answer = Math.max(answer, total);
 
-        // 1️⃣ 물고기 이동
         moveFishes(map, sx, sy);
 
-        // 2️⃣ 상어 이동 (1~3칸)
         for (int step = 1; step <= 3; step++) {
             int nx = sx + dx[sDir] * step;
             int ny = sy + dy[sDir] * step;
@@ -48,8 +43,6 @@ public class Main {
             Data[][] newMap = deepCopy(map);
             int eaten = newMap[nx][ny].num;
             int newDir = newMap[nx][ny].dir;
-
-            // 상어가 이동해서 먹음
             newMap[sx][sy] = null;
             newMap[nx][ny] = null;
 
@@ -61,7 +54,6 @@ public class Main {
         for (int num = 1; num <= 16; num++) {
             int fx = -1, fy = -1;
 
-            // 현재 번호 물고기 위치 찾기
             find:
             for (int i = 0; i < 4; i++) {
                 for (int j = 0; j < 4; j++) {
@@ -72,8 +64,7 @@ public class Main {
                     }
                 }
             }
-
-            if (fx == -1) continue; // 이미 먹힌 물고기
+            if (fx == -1) continue;//이미 먹힌 물고기
 
             int dir = map[fx][fy].dir;
             for (int d = 0; d < 8; d++) {
@@ -82,9 +73,8 @@ public class Main {
                 int ny = fy + dy[nd];
 
                 if (!check(nx, ny)) continue;
-                if (nx == sx && ny == sy) continue; // 상어가 있는 칸은 이동 불가
+                if (nx == sx && ny == sy) continue;
 
-                // 스왑 or 이동
                 Data temp = map[nx][ny];
                 map[nx][ny] = new Data(map[fx][fy].num, nd);
                 map[fx][fy] = (temp == null) ? null : new Data(temp.num, temp.dir);
