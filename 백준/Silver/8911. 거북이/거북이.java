@@ -16,22 +16,19 @@ public class Main {
                 if (s.charAt(i) == 'F') {
                     x += dx[dir];
                     y += dy[dir];
-                    minX = Math.min(minX, x);
-                    maxX = Math.max(maxX, x);
-                    minY = Math.min(minY, y);
-                    maxY = Math.max(maxY, y);
                 } else if (s.charAt(i) == 'B') {
                     x -= dx[dir];
                     y -= dy[dir];
-                    minX = Math.min(minX, x);
-                    maxX = Math.max(maxX, x);
-                    minY = Math.min(minY, y);
-                    maxY = Math.max(maxY, y);
                 } else if (s.charAt(i) == 'L') {
                     dir = (dir + 3) % 4;//-1 == 4 - 1 == 3
                 } else {//R
                     dir = (dir + 1) % 4;
                 }
+                
+                minX = Math.min(minX, x);
+                maxX = Math.max(maxX, x);
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
             }
             System.out.println((maxX - minX) * (maxY - minY));
         }
