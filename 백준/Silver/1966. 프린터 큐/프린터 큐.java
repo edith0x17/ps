@@ -2,58 +2,48 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int t, n, m;
 
-    static int t;
-    static int n, m;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = null;
+        StringTokenizer st;
         t = Integer.parseInt(br.readLine());
         while (t-- > 0) {
-            Queue<Data> queue = new LinkedList<>(); // 실제 문서 순서 유지
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder()); // 중요도가 높은 순 정렬
-
             st = new StringTokenizer(br.readLine());
             n = Integer.parseInt(st.nextToken());
             m = Integer.parseInt(st.nextToken());
+
             st = new StringTokenizer(br.readLine());
+            Queue<Data> q = new ArrayDeque<>();
+            PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());//내림차순
             for (int i = 0; i < n; i++) {
                 int priority = Integer.parseInt(st.nextToken());
-                queue.offer(new Data(priority, i));
+                q.offer(new Data(i, priority));
                 pq.offer(priority);
             }
-
-            int cnt = 0;
-            while (!queue.isEmpty()) {
-                Data data = queue.poll(); // 꺼내기
-                if (data.priority == pq.peek()) { // 출력
+            int rank = 0;
+            while (!q.isEmpty()) {
+                Data data = q.poll();
+                if (data.priority == pq.peek()) {
                     pq.poll();
-                    cnt++;
-
-                    if (data.idx == m) {
-                        sb.append(cnt).append("\n");
+                    rank++;
+                    if (data.num == m) {
+                        System.out.println(rank);
                         break;
                     }
-                } else { // 다시 넣기
-                    queue.offer(data);
+                } else {
+                    q.offer(data);
                 }
             }
         }
-
-        bw.write(sb.toString());
-        bw.flush();
-        bw.close();
     }
 
     static class Data {
-        int priority;
-        int idx;
+        int num, priority;
 
-        public Data(int priority, int idx) {
+        public Data(int num, int priority) {
+            this.num = num;
             this.priority = priority;
-            this.idx = idx;
         }
     }
 }
