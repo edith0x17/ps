@@ -2,50 +2,45 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int n, m;
+    static int n;
     static boolean[] a;
+    static int t;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
-
-        n = Integer.parseInt(br.readLine());
-        a = new boolean[n + 1]; // 1-based index
-
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        a = new boolean[n + 1];
         st = new StringTokenizer(br.readLine());
         for (int i = 1; i <= n; i++) {
-            a[i] = st.nextToken().equals("1");
+            int temp = Integer.parseInt(st.nextToken());
+            if (temp == 1) a[i] = true;
+            else a[i] = false;
         }
-
-        m = Integer.parseInt(br.readLine());
-
-        for (int i = 0; i < m; i++) {
+        st = new StringTokenizer(br.readLine());
+        t = Integer.parseInt(st.nextToken());
+        while (t-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int sex = Integer.parseInt(st.nextToken());
-            int num = Integer.parseInt(st.nextToken());
-
-            if (sex == 1) { // 남학생
-                for (int j = num; j <= n; j += num) {
-                    a[j] = !a[j];
+            int A = Integer.parseInt(st.nextToken());
+            int B = Integer.parseInt(st.nextToken());
+            if (A == 1) {//남
+                for (int i = B; i <= n; i += B) {
+                    a[i] = !a[i];
                 }
-            } else { // 여학생
-                a[num] = !a[num];
-                int l = num - 1;
-                int r = num + 1;
-                while (l >= 1 && r <= n && a[l] == a[r]) {
-                    a[l] = !a[l];
-                    a[r] = !a[r];
+            } else {//여
+                int l = B - 1, r = B + 1;
+                while (l >= 1 && r <= n && a[l] == a[r]) {//l >= 1
                     l--;
                     r++;
                 }
+                for (int i = l + 1; i < r; i++) {//l + 1, r - 1
+                    a[i] = !a[i];
+                }
             }
         }
-
-        StringBuilder sb = new StringBuilder();
         for (int i = 1; i <= n; i++) {
-            sb.append(a[i] ? "1 " : "0 ");
-            if (i % 20 == 0) sb.append("\n");
+            System.out.print(a[i] ? "1 " : "0 ");
+            if (i % 20 == 0) System.out.println();
         }
-        System.out.println(sb);
     }
 }
