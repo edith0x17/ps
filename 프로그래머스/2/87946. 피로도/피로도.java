@@ -2,38 +2,38 @@ import java.io.*;
 import java.util.*;
 
 class Solution {
-    static int k, n;
-    static int[][] dungeons;
+    static int n, answer;
+    static int[] ret;
     static boolean[] visited;
-    static int[][] ret;
-    static int answer = -1;
-    public int solution(int t, int[][] temp) {
-        k = t;
-        n = temp.length;
-        dungeons = temp;
-        visited = new boolean[n + 1];
-        ret = new int[n + 1][2];
-        dfs(0);
+    public int solution(int k, int[][] dungeons) {
+        n = dungeons.length;
+        System.out.println(n);
+        ret = new int[n];
+        visited = new boolean[n];
+        go(0, k, dungeons);
         return answer;
     }
-    static void dfs(int depth){
-        if(depth == n){
-            int kTemp = k, cnt = 0;
-            for(int i = 0; i < n; i++){
-                if(kTemp >= ret[i][0]){
-                    cnt++;
-                    kTemp -= ret[i][1];
-                }else break;
+    static int check(int k, int[][] dungeons){
+        int cnt = 0;
+        for(int i = 0; i < n; i++){
+            if(k >= dungeons[ret[i]][0]){
+                cnt++;
+                k -= dungeons[ret[i]][1];
             }
-            answer = Math.max(answer, cnt);
+            else return cnt;
+        }
+        return cnt;
+    }
+    static void go(int depth, int k, int[][] dungeons){
+        if(depth == n){
+            answer = Math.max(answer, check(k, dungeons));
             return;
         }
         for(int i = 0; i < n; i++){
-            if(visited[i])continue;
+            if(visited[i]) continue;
+            ret[depth] = i;
             visited[i] = true;
-            ret[depth][0] = dungeons[i][0];
-            ret[depth][1] = dungeons[i][1];
-            dfs(depth + 1);
+            go(depth + 1, k, dungeons);
             visited[i] = false;
         }
     }
