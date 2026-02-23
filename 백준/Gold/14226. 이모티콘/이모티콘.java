@@ -24,11 +24,11 @@ public class Main {
                 visited[screen][screen] = true;
                 q.offer(new int[]{screen, screen, time + 1});
             }
-            if (clip > 0 && screen + clip <= 1000 && !visited[screen + clip][clip]) {//붙여넣기
+            if (0 < clip && screen + clip <= 1000 && !visited[screen + clip][clip]) {//붙여넣기
                 visited[screen + clip][clip] = true;
                 q.offer(new int[]{screen + clip, clip, time + 1});
             }
-            if (screen > 0 && !visited[screen - 1][clip]) {//삭제
+            if (0 < screen && !visited[screen - 1][clip]) {//삭제
                 visited[screen - 1][clip] = true;
                 q.offer(new int[]{screen - 1, clip, time + 1});
             }
