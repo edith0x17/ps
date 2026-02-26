@@ -1,0 +1,27 @@
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int t, k, n;
+    static int[][] dp;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            k = Integer.parseInt(br.readLine());//층
+            n = Integer.parseInt(br.readLine());//호
+            dp = new int[k + 1][n + 1];
+            for (int i = 1; i <= n; i++) {
+                dp[0][i] = i;
+            }
+
+            for (int i = 1; i <= k; i++) {
+                for (int j = 1; j <= n; j++) {
+                    dp[i][j] = dp[i][j - 1] + dp[i - 1][j];//전 + 지금
+                }
+            }
+            System.out.println(dp[k][n]);
+        }
+    }
+}
