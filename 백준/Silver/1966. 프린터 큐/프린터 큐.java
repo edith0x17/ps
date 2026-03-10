@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int t, n, m;
+    static int t;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -10,40 +10,44 @@ public class Main {
         t = Integer.parseInt(br.readLine());
         while (t-- > 0) {
             st = new StringTokenizer(br.readLine());
-            n = Integer.parseInt(st.nextToken());
-            m = Integer.parseInt(st.nextToken());
-
-            st = new StringTokenizer(br.readLine());
+            int n = Integer.parseInt(st.nextToken());
+            int m = Integer.parseInt(st.nextToken());
             Queue<Data> q = new ArrayDeque<>();
-            PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());//내림차순
+            st = new StringTokenizer(br.readLine());
             for (int i = 0; i < n; i++) {
-                int priority = Integer.parseInt(st.nextToken());
-                q.offer(new Data(i, priority));
-                pq.offer(priority);
+                int p = Integer.parseInt(st.nextToken());
+                q.offer(new Data(p, i));
             }
             int rank = 0;
             while (!q.isEmpty()) {
-                Data data = q.poll();
-                if (data.priority == pq.peek()) {
-                    pq.poll();
+                Data cur = q.poll();
+                
+                boolean bigger = false;
+                for (Data d : q) {
+                    if (d.p > cur.p) {
+                        bigger = true;
+                        break;
+                    }
+                }
+                if (bigger) {
+                    q.offer(cur);//다시넣기
+                } else {
                     rank++;
-                    if (data.num == m) {
+                    if (cur.num == m) {
                         System.out.println(rank);
                         break;
                     }
-                } else {
-                    q.offer(data);
                 }
             }
         }
     }
 
     static class Data {
-        int num, priority;
+        int p, num;
 
-        public Data(int num, int priority) {
+        public Data(int p, int num) {
+            this.p = p;
             this.num = num;
-            this.priority = priority;
         }
     }
 }
