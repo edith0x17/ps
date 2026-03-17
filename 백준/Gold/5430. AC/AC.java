@@ -1,80 +1,60 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
-public class Main{
+public class Main {
+    static int t, n;
+    static String op, s;
 
-    static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) throws IOException {
-
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int t = Integer.parseInt(br.readLine());
-        while(t-- != 0){
-            String p = br.readLine();
-            int n = Integer.parseInt(br.readLine());
+        t = Integer.parseInt(br.readLine());
+        while (t-- > 0) {
+            op = br.readLine();
+            n = Integer.parseInt(br.readLine());
+            s = br.readLine();
+            s = s.substring(1, s.length() - 1);
+            Deque<Integer> dq = new ArrayDeque<>();
+            if (n > 0) {
+                String[] ss = s.split(",");
+                for (String x : ss) {
+                    dq.offer(Integer.parseInt(x));
+                }
+            }
+            boolean flag = false, flag2 = false;
+            for (int i = 0; i < op.length(); i++) {
+                if (op.charAt(i) == 'R') {
+                    flag = !flag;
+                } else {
+                    if (dq.isEmpty()) {
+                        flag2 = true;
+                        System.out.println("error");
+                        break;
+                    }
 
-            StringTokenizer st = new StringTokenizer(br.readLine(), "[],");
-
-            ArrayDeque<Integer> dq = new ArrayDeque<>();
-            for(int i = 0; i < n; i++) {
-                int temp = Integer.parseInt(st.nextToken());
-                dq.add(temp);
+                    if (!flag) dq.pollFirst();
+                    else dq.pollLast();
+                }
             }
 
-//            System.out.println("p: " + p);
-//            System.out.println(Arrays.toString(dq.toArray()));
-
-            AC(p, dq);
-        }
-        System.out.println(sb);
-    }
-
-     static void AC(String ss, ArrayDeque<Integer> deque) {
-        boolean dir = true;
-        for(char ch : ss.toCharArray()) {
-
-            // R
-            if(ch == 'R') {
-                dir = !dir;	// 방향을 바꿔준다.
-                continue;
-            }else{ // D
-                if(deque.size() == 0){
-                    sb.append("error\n");
-                    return;
-                }else{
-                    if(dir == true){ // front
-                        deque.pollFirst();
-                    }else{ // back
-                        deque.pollLast();
+            if (!flag2) {
+                StringBuilder sb = new StringBuilder();
+                sb.append("[");
+                if (!dq.isEmpty()) {
+                    if (!flag) {
+                        while (!dq.isEmpty()) {
+                            sb.append(dq.pollFirst());
+                            if (!dq.isEmpty()) sb.append(",");
+                        }
+                    } else {
+                        while (!dq.isEmpty()) {
+                            sb.append(dq.pollLast());
+                            if (!dq.isEmpty()) sb.append(",");
+                        }
                     }
                 }
+                sb.append("]");
+                System.out.println(sb.toString());
             }
         }
-
-        makePrintString(deque, dir);
-    }
-
-    static void makePrintString(ArrayDeque<Integer> deque, boolean dir) {
-
-        sb.append('[');
-
-        if(deque.size() > 0) {
-            if(dir) {
-                sb.append(deque.pollFirst());
-                while(!deque.isEmpty()) {
-                    sb.append(',').append(deque.pollFirst());
-                }
-            }else {
-                sb.append(deque.pollLast());
-                while(!deque.isEmpty()) {
-                    sb.append(',').append(deque.pollLast());
-                }
-            }
-        }
-
-        sb.append(']').append('\n');
     }
 }
