@@ -2,23 +2,23 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int n, m, answer;
+    static Deque<Integer> dq = new ArrayDeque<>();
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
-        Deque<Integer> dq = new ArrayDeque<>();
-        for (int i = 1; i <= n; i++) {
-            dq.offer(i);
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < n; i++) {
+            dq.offer(i + 1);
         }
         st = new StringTokenizer(br.readLine());
-        int answer = 0;
-        for (int i = 0; i < m; i++) {
+        for (int k = 0; k < m; k++) {
             int target = Integer.parseInt(st.nextToken());
             int idx = 0;
-            for (int x : dq) {
-                if (x == target) break;
+            for (int i : dq) {
+                if (i == target) break;
                 idx++;
             }
 
