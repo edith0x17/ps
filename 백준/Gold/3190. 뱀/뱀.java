@@ -1,3 +1,4 @@
+import javax.swing.plaf.DesktopIconUI;
 import java.io.*;
 import java.util.*;
 
@@ -10,52 +11,54 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
         n = Integer.parseInt(br.readLine());
         a = new int[n][n];
-        Deque<int[]> snake = new ArrayDeque<>();
-        a[0][0] = 1;
-        snake.offer(new int[]{0, 0});
         k = Integer.parseInt(br.readLine());
-        StringTokenizer st;
         for (int i = 0; i < k; i++) {
             st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken());
-            int y = Integer.parseInt(st.nextToken());
-            a[x - 1][y - 1] = 2;//사과
+            int x = Integer.parseInt(st.nextToken()) - 1;
+            int y = Integer.parseInt(st.nextToken()) - 1;
+            a[x][y] = 2;//사과
         }
         l = Integer.parseInt(br.readLine());
-        Map<Integer, Character> map = new HashMap<>();
+        Map<Integer, Character> mp = new HashMap<>();
         for (int i = 0; i < l; i++) {
             st = new StringTokenizer(br.readLine());
             int x = Integer.parseInt(st.nextToken());
-            char c = st.nextToken().charAt(0);
-            map.put(x, c);
+            char ch = st.nextToken().charAt(0);
+            mp.put(x, ch);
         }
-        int time = 0;
+        a[snakeX][snakeY] = 1;//뱀
+        Deque<int[]> dq = new ArrayDeque<>();
+        dq.offer(new int[]{0, 0});
+        int t = 0;
         while (true) {
-            time++;
+            t++;
             int nx = snakeX + dx[snakeDir];
             int ny = snakeY + dy[snakeDir];
-            if (nx < 0 || nx >= n || ny < 0 || ny >= n) break;//벽
-            if (a[nx][ny] == 1) break;//자기자신의 몸
+            if (nx < 0 || nx >= n || ny < 0 || ny >= n) break;
+            if (a[nx][ny] == 1) break;
 
             if (a[nx][ny] == 2) {
                 a[nx][ny] = 1;
-                snake.offerFirst(new int[]{nx, ny});
+                dq.offerFirst(new int[]{nx, ny});
             } else {
                 a[nx][ny] = 1;
-                snake.offerFirst(new int[]{nx, ny});
-                int[] tail = snake.pollLast();
+                dq.offerFirst(new int[]{nx, ny});
+                int[] tail = dq.pollLast();
                 a[tail[0]][tail[1]] = 0;
             }
+
             snakeX = nx;
             snakeY = ny;
-            if (map.containsKey(time)) {
-                char c = map.get(time);
+
+            if (mp.containsKey(t)) {
+                char c = mp.get(t);
                 if (c == 'L') snakeDir = (snakeDir + 4 - 1) % 4;
                 else snakeDir = (snakeDir + 1) % 4;
             }
         }
-        System.out.println(time);
+        System.out.println(t);
     }
 }
