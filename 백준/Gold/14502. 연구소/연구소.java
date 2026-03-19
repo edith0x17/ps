@@ -5,72 +5,76 @@ public class Main {
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
     static int n, m;
-    static int[][] map, ori;
-    static ArrayList<int[]> virus = new ArrayList<>(), temp = new ArrayList<>();
-    static boolean[][] visited;
+    static int[][] aOri, tmp;
+    static ArrayList<int[]> empty = new ArrayList<>();
+    static ArrayList<int[]> virus = new ArrayList<>();
     static int answer = Integer.MIN_VALUE;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
-        map = new int[n][m];
-        ori = new int[n][m];
+        aOri = new int[n][m];
         for (int i = 0; i < n; i++) {
             st = new StringTokenizer(br.readLine());
             for (int j = 0; j < m; j++) {
-                map[i][j] = ori[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 0) temp.add(new int[]{i, j}); // 빈 칸
-                else if (map[i][j] == 2) virus.add(new int[]{i, j}); // 바이러스
+                aOri[i][j] = Integer.parseInt(st.nextToken());
+                if (aOri[i][j] == 0) empty.add(new int[]{i, j});
+                if (aOri[i][j] == 2) virus.add(new int[]{i, j});
             }
         }
-
-        for (int i = 0; i < temp.size(); i++) {
-            for (int j = i + 1; j < temp.size(); j++) {
-                for (int k = j + 1; k < temp.size(); k++) {
+        for (int i = 0; i < empty.size(); i++) {
+            for (int j = i + 1; j < empty.size(); j++) {
+                for (int k = j + 1; k < empty.size(); k++) {
                     init();
-                    visited = new boolean[n][m];
-
-                    map[temp.get(i)[0]][temp.get(i)[1]] = 1;
-                    map[temp.get(j)[0]][temp.get(j)[1]] = 1;
-                    map[temp.get(k)[0]][temp.get(k)[1]] = 1;
-
-                    answer = Math.max(answer, go());
+                    go(i, j, k);
                 }
             }
         }
         System.out.println(answer);
     }
+
     static void init() {
+        tmp = new int[n][m];
         for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                map[i][j] = ori[i][j];
-            }
+            tmp[i] = Arrays.copyOf(aOri[i], m);
         }
     }
-    static int go() {
-        for (int[] arr : virus) {
-            dfs(arr[0], arr[1]);
-        }
 
-        int ret = 0;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                if (map[i][j] == 0) ret++;
+    static void go(int i, int j, int k) {
+        int[] p1 = empty.get(i);
+        int[] p2 = empty.get(j);
+        int[] p3 = empty.get(k);
+        tmp[p1[0]][p1[1]] = 1;
+        tmp[p2[0]][p2[1]] = 1;
+        tmp[p3[0]][p3[1]] = 1;
+        Queue<int[]> q = new ArrayDeque<>();
+        boolean[][] visited = new boolean[n][m];
+        for (int[] v : virus) {
+            q.offer(new int[]{v[0], v[1]});
+            visited[v[0]][v[1]] = true;
+        }
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int x = cur[0], y = cur[1];
+            for (int d = 0; d < 4; d++) {
+                int nx = x + dx[d];
+                int ny = y + dy[d];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if (visited[nx][ny]) continue;
+                if (tmp[nx][ny] == 1) continue;
+                tmp[nx][ny] = 2;
+                visited[nx][ny] = true;
+                q.offer(new int[]{nx, ny});
             }
         }
-        return ret;
-    }
-
-    static void dfs(int x, int y) {
-        visited[x][y] = true;
-        map[x][y] = 2;
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if (nx < 0 || nx >= n || ny < 0 || ny >= m || visited[nx][ny]) continue;
-            if (map[nx][ny] != 0) continue;// 1 벽 2 바이러스
-            dfs(nx, ny);
+        int cnt = 0;
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < m; c++) {
+                if (tmp[r][c] == 0) cnt++;
+            }
         }
+        answer = Math.max(answer, cnt);
     }
 }
