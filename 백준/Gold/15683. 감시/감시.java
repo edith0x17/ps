@@ -48,9 +48,10 @@ public class Main {
         while (true) {
             x += dx[d];
             y += dy[d];
-            if (x < 0 || x >= n || y < 0 || y >= m) break;
-            if (tmp[x][y] == 6) break;
-            if (tmp[x][y] == 0) tmp[x][y] = 999;
+            if (x < 0 || x >= n || y < 0 || y >= m) break;//범위
+            //방문
+            if (tmp[x][y] == 6) break;//장애물
+            if (tmp[x][y] == 0) tmp[x][y] = 999;//조건
         }
     }
 
@@ -59,8 +60,10 @@ public class Main {
             check(map);
             return;
         }
+        
         int[] cur = cctvList.get(depth);
         int x = cur[0], y = cur[1], type = cur[2];
+        
         if (type == 1) {
             for (int i = 0; i < 4; i++) {
                 int[][] tmp = copy(map);
