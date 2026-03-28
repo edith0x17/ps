@@ -1,72 +1,78 @@
 import java.io.*;
 import java.util.*;
 
-public class Main{
+public class Main {
     static int[][] gear = new int[4][8];
-    static int k;
-    static int[] d;
-    public static void main(String[] args) throws IOException{
+    static int k, a, b, ans;
+    static int[] dir;
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = null;
-        for(int i = 0; i < 4; i++){
+        StringTokenizer st;
+        for (int i = 0; i < 4; i++) {
             String s = br.readLine();
-            for(int j = 0; j < 8; j++){
+            for (int j = 0; j < 8; j++) {
                 gear[i][j] = s.charAt(j) - '0';
             }
         }
         k = Integer.parseInt(br.readLine());
-        while(k-- > 0){
+        while (k-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int gearN = Integer.parseInt(st.nextToken()) - 1;
-            int turn  = Integer.parseInt(st.nextToken());
-
-            d = new int[4];
-
-            d[gearN] = turn;
-            checkDir(gearN);
-            turnGear();
+            a = Integer.parseInt(st.nextToken()) - 1;//톱니바퀴의 번호
+            b = Integer.parseInt(st.nextToken());//방향
+            dir = new int[4];
+            dir[a] = b;
+            //왼쪽 6 2
+            for (int i = a; i >= 1; i--) {
+                if (gear[i][6] != gear[i - 1][2]) {
+                    dir[i - 1] = -dir[i];
+                } else {
+                    break;
+                }
+            }
+            //오른쪽
+            for (int i = a; i < 4 - 1; i++) {
+                if (gear[i][2] != gear[i + 1][6]) {
+                    dir[i + 1] = -dir[i];
+                } else {
+                    break;
+                }
+            }
+            //회전
+            for (int i = 0; i < 4; i++) {
+                if (dir[i] != 0) {
+                    rotate(i, dir[i]);//톱니바퀴의 번호, 방향
+                }
+            }
         }
-        int ans =0;
-        if(gear[0][0] == 1) ans+=1;
-        if(gear[1][0] == 1) ans+=2;
-        if(gear[2][0] == 1) ans+=4;
-        if(gear[3][0] == 1) ans+=8;
+        if (gear[0][0] == 1) ans += 1;
+        if (gear[1][0] == 1) ans += 2;
+        if (gear[2][0] == 1) ans += 4;
+        if (gear[3][0] == 1) ans += 8;
         System.out.println(ans);
     }
-    static void checkDir(int gearN){
-        // left
-        for(int i = gearN - 1; i >= 0; i--){
-            if(gear[i][2] != gear[i + 1][6]){
-                d[i] = d[i + 1] * -1;
-            }else{
-                break;
-            }
-        }
-        // right
-        for(int i = gearN + 1; i < 4; i++){
-            if(gear[i][6] != gear[i - 1][2]){
-                d[i] = d[i - 1] * -1;
-            }else{
-                break;
-            }
-        }
-    }
-    static void turnGear(){
-        for(int i = 0; i < 4; i++){
-            if(d[i] == 1){// 시계
-                int temp = gear[i][7];
-                for(int j = 7; j > 0; j--){
-                    gear[i][j] = gear[i][j - 1];
-                }
-                gear[i][0] = temp;
-            }
-            else if(d[i] == -1){// 반시계
-                int temp = gear[i][0];
-                for(int j = 0; j < 7; j++){
-                    gear[i][j] = gear[i][j + 1];
-                }
-                gear[i][7] = temp;
-            }
+
+    static void rotate(int i, int dir) {
+        if (dir == 1) {//시계
+            int tmp = gear[i][7];
+            gear[i][7] = gear[i][6];
+            gear[i][6] = gear[i][5];
+            gear[i][5] = gear[i][4];
+            gear[i][4] = gear[i][3];
+            gear[i][3] = gear[i][2];
+            gear[i][2] = gear[i][1];
+            gear[i][1] = gear[i][0];
+            gear[i][0] = tmp;
+        } else if (dir == -1) {//반시계
+            int tmp = gear[i][0];
+            gear[i][0] = gear[i][1];
+            gear[i][1] = gear[i][2];
+            gear[i][2] = gear[i][3];
+            gear[i][3] = gear[i][4];
+            gear[i][4] = gear[i][5];
+            gear[i][5] = gear[i][6];
+            gear[i][6] = gear[i][7];
+            gear[i][7] = tmp;
         }
     }
 }
