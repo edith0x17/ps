@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     static int[][] gear = new int[4][8];
-    static int k, a, b, ans;
+    static int k, a, b;
     static int[] dir;
 
     public static void main(String[] args) throws IOException {
@@ -18,11 +18,11 @@ public class Main {
         k = Integer.parseInt(br.readLine());
         while (k-- > 0) {
             st = new StringTokenizer(br.readLine());
-            a = Integer.parseInt(st.nextToken()) - 1;//톱니바퀴의 번호
-            b = Integer.parseInt(st.nextToken());//방향
+            a = Integer.parseInt(st.nextToken()) - 1;
+            b = Integer.parseInt(st.nextToken());
             dir = new int[4];
             dir[a] = b;
-            //왼쪽 6 2
+            //왼
             for (int i = a; i >= 1; i--) {
                 if (gear[i][6] != gear[i - 1][2]) {
                     dir[i - 1] = -dir[i];
@@ -30,8 +30,8 @@ public class Main {
                     break;
                 }
             }
-            //오른쪽
-            for (int i = a; i < 4 - 1; i++) {
+            //오
+            for (int i = a; i <= 2; i++) {
                 if (gear[i][2] != gear[i + 1][6]) {
                     dir[i + 1] = -dir[i];
                 } else {
@@ -40,11 +40,10 @@ public class Main {
             }
             //회전
             for (int i = 0; i < 4; i++) {
-                if (dir[i] != 0) {
-                    rotate(i, dir[i]);//톱니바퀴의 번호, 방향
-                }
+                if (dir[i] != 0) rotate(i, dir[i]);
             }
         }
+        int ans = 0;
         if (gear[0][0] == 1) ans += 1;
         if (gear[1][0] == 1) ans += 2;
         if (gear[2][0] == 1) ans += 4;
