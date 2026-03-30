@@ -15,19 +15,23 @@ public class Main {
         for (int i = 0; i < w; i++) {
             a[i] = Integer.parseInt(st.nextToken());
         }
-        int answer = 0;
-        for (int i = 1; i < w - 1; i++) {
-            int left = 0, right = 0;
-            //왼쪽 제일 큰 블록
-            for (int j = i; j >= 0; j--) {
-                left = Math.max(left, a[j]);
+
+        int ans = 0;
+        for (int i = 0; i < w; i++) {
+            //l
+            int l = 0;
+            for (int j = i - 1; j >= 0; j--) {
+                l = Math.max(l, a[j]);
             }
-            //오른쪽 제일 큰 블록
-            for (int j = i; j < w; j++) {
-                right = Math.max(right, a[j]);
+            //r
+            int r = 0;
+            for (int j = i + 1; j < w; j++) {
+                r = Math.max(r, a[j]);
             }
-            answer += Math.min(left, right) - a[i];
+
+            int water = Math.min(l, r) - a[i];//l, r - 현재
+            if (water > 0) ans += water;
         }
-        System.out.println(answer);
+        System.out.println(ans);
     }
 }
