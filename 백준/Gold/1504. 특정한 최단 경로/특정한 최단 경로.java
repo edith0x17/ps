@@ -1,90 +1,86 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-    static class Data implements Comparable<Data> {
-        int to;
-        int distance;
-
-        public Data(int to, int distance) {
-            this.to = to;
-            this.distance = distance;
-        }
-
-        @Override
-        public int compareTo(Data o) {
-            return this.distance - o.distance;
-        }
-    }
-
     static int n, e, v1, v2;
-    static ArrayList<Data>[] adj = new ArrayList[804];
-    static int[] dp;
+    static ArrayList<Data>[] adj;
+    static int[] distS, distV1, distV2;
     static PriorityQueue<Data> pq = new PriorityQueue<>();
-    static final int INF = 200000000;
 
     public static void main(String[] args) throws IOException {
-        for (int i = 0; i < 804; i++) {
-            adj[i] = new ArrayList<>();
-        }
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
         e = Integer.parseInt(st.nextToken());
+        adj = new ArrayList[n + 1];
+        for (int i = 0; i < n + 1; i++) {
+            adj[i] = new ArrayList<>();
+        }
+        distS = new int[n + 1];
+        distV1 = new int[n + 1];
+        distV2 = new int[n + 1];
         for (int i = 0; i < e; i++) {
             st = new StringTokenizer(br.readLine());
             int f = Integer.parseInt(st.nextToken());
             int t = Integer.parseInt(st.nextToken());
-            int d = Integer.parseInt(st.nextToken());
-            adj[f].add(new Data(t, d));
-            adj[t].add(new Data(f, d)); // 양방향 그래프
+            int w = Integer.parseInt(st.nextToken());
+            adj[f].add(new Data(t, w));
+            adj[t].add(new Data(f, w));//양방향
         }
         st = new StringTokenizer(br.readLine());
         v1 = Integer.parseInt(st.nextToken());
         v2 = Integer.parseInt(st.nextToken());
 
-        int answer1 = go(1, v1) + go(v1, v2) + go(v2, n);
-        int answer2 = go(1, v2) + go(v2, v1) + go(v1, n);
-
-        int answer = Math.min(answer1, answer2);
-
-        if (answer >= INF) System.out.println(-1); // 연결 불가 시
-        else System.out.println(answer);
-    }
-
-    static void init() {
-        dp = new int[804];
-        for (int i = 0; i < 804; i++) {
-            dp[i] = INF;
+        for (int i = 0; i < n + 1; i++) {
+            distS[i] = Integer.MAX_VALUE;
+            distV1[i] = Integer.MAX_VALUE;
+            distV2[i] = Integer.MAX_VALUE;
         }
-        pq.clear();
+        go(1, distS);
+        go(v1, distV1);
+        go(v2, distV2);
+        long case1 = (long) distS[v1] + distV1[v2] + distV2[n];
+        long case2 = (long) distS[v2] + distV2[v1] + distV1[n];
+        long ans = Math.min(case1, case2);
+        if (distS[v1] == Integer.MAX_VALUE || distV1[v2] == Integer.MAX_VALUE || distV2[n] == Integer.MAX_VALUE) {
+            case1 = Long.MAX_VALUE;
+        }
+        if (distS[v2] == Integer.MAX_VALUE || distV2[v1] == Integer.MAX_VALUE || distV1[n] == Integer.MAX_VALUE) {
+            case2 = Long.MAX_VALUE;
+        }
+        ans = Math.min(case1, case2);
+        if (ans == Long.MAX_VALUE) System.out.println(-1);
+        else System.out.println(ans);
     }
 
-    static int go(int start, int end) {
-        init();
-        dp[start] = 0;
-        pq.add(new Data(start, 0));
-
+    static void go(int s, int[] dist) {
+        dist[s] = 0;
+        pq.offer(new Data(s, 0));
         while (!pq.isEmpty()) {
-            Data data = pq.poll();
-            int here = data.to;
-
-            // 목적지에 도달한 경우
-            if (here == end) return dp[end];
-
-            for (Data there : adj[here]) {
-                if (dp[there.to] > dp[here] + there.distance) {
-                    dp[there.to] = dp[here] + there.distance;
-                    pq.add(new Data(there.to, dp[there.to]));
+            Data tmp = pq.poll();
+            int now = tmp.t, nowWeight = tmp.w;
+            if (dist[now] < nowWeight) continue;
+            for (Data data : adj[now]) {
+                int next = data.t, nextWeight = data.w;
+                if (dist[next] > dist[now] + nextWeight) {
+                    dist[next] = dist[now] + nextWeight;
+                    pq.offer(new Data(next, dist[now] + nextWeight));
                 }
             }
         }
+    }
 
-        // 도달할 수 없는 경우 INF 반환
-        return dp[end];
+    static class Data implements Comparable<Data> {
+        int t, w;
+
+        public Data(int t, int w) {
+            this.t = t;
+            this.w = w;
+        }
+
+        @Override
+        public int compareTo(Data o) {
+            return Integer.compare(this.w, o.w);//오름차순
+        }
     }
 }
