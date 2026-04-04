@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int v, e, start;
+    static int v, e, k;
     static ArrayList<Data>[] adj;
     static int[] dist;
     static PriorityQueue<Data> pq = new PriorityQueue<>();
@@ -17,8 +17,7 @@ public class Main {
             adj[i] = new ArrayList<>();
         }
         dist = new int[v + 1];
-        st = new StringTokenizer(br.readLine());
-        start = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(br.readLine());
         for (int i = 0; i < e; i++) {
             st = new StringTokenizer(br.readLine());
             int f = Integer.parseInt(st.nextToken());
@@ -26,30 +25,30 @@ public class Main {
             int w = Integer.parseInt(st.nextToken());
             adj[f].add(new Data(t, w));
         }
-        //초기화
         for (int i = 0; i < v + 1; i++) {
             dist[i] = Integer.MAX_VALUE;
         }
-
-        dist[start] = 0;
-        pq.add(new Data(start, 0));
+        dist[k] = 0;
+        pq.offer(new Data(k, 0));
         while (!pq.isEmpty()) {
             Data tmp = pq.poll();
-            int here = tmp.t, weight = tmp.w;
-            if (dist[here] < weight) continue;//
-            for (Data data : adj[here]) {
+            int now = tmp.t, nowWeight = tmp.w;
+            if (dist[now] < nowWeight) continue;
+            for (Data data : adj[now]) {
                 int next = data.t, nextWeight = data.w;
-                if (dist[next] > dist[here] + nextWeight) {
-                    dist[next] = dist[here] + nextWeight;
-                    pq.offer(new Data(next, dist[here] + nextWeight));
+                if (dist[next] > dist[now] + nextWeight) {
+                    dist[next] = dist[now] + nextWeight;
+                    pq.offer(new Data(next, dist[now] + nextWeight));
                 }
             }
         }
-
-        for (int i = 1; i <= v; i++) {
-            if (dist[i] == Integer.MAX_VALUE) System.out.println("INF");
-            else System.out.println(dist[i]);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 1; i < v + 1; i++) {
+            if (i == k) sb.append(0 + "\n");
+            else if (dist[i] == Integer.MAX_VALUE) sb.append("INF\n");
+            else sb.append(dist[i] + "\n");
         }
+        System.out.println(sb);
     }
 
     static class Data implements Comparable<Data> {
@@ -62,7 +61,7 @@ public class Main {
 
         @Override
         public int compareTo(Data o) {
-            return Integer.compare(this.w, o.w);
+            return Integer.compare(this.w, o.w);//오름차순
         }
     }
 }
