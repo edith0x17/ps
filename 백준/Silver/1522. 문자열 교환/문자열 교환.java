@@ -2,29 +2,28 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int windowSize, idx, answer = Integer.MAX_VALUE;
+    static String str;
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String str = br.readLine();
-        for(int i = 0; i < str.length(); i++){
-            if(str.charAt(i) == 'a')windowSize++;
-        }
-        int aCount = 0, bCount = 0;
-        for(int i = 0; i < windowSize; i++){
-            if(str.charAt(i) == 'a')aCount++;
-            else bCount++;
-        }
-        str = str + str;
-        for(int i = windowSize; i < str.length(); i++){
-            // front
-            if(str.charAt(i) == 'a')aCount++;
-            else bCount++;
-            // back
-            if(str.charAt(idx++) == 'a')aCount--;
-            else bCount--;
+        str = br.readLine();
 
-            answer = Math.min(answer, bCount);
+        int aCnt = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == 'a') aCnt++;
         }
-        System.out.println(answer);
+        int bCnt = 0, ans = 0;
+        for (int i = 0; i < aCnt; i++) {
+            if (str.charAt(i) == 'b') bCnt++;
+        }
+        ans = bCnt;
+        str = str + str;
+        int l = 0;
+        for (int i = aCnt; i < str.length(); i++) {
+            if (str.charAt(l++) == 'b') bCnt--;//왼
+            if (str.charAt(i) == 'b') bCnt++;//오
+            ans = Math.min(ans, bCnt);
+        }
+        System.out.println(ans);
     }
 }
