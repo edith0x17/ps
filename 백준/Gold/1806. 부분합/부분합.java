@@ -2,31 +2,29 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static StringBuilder sb = new StringBuilder();
-    static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+    static int n, s, ans = Integer.MAX_VALUE;
+    static int[] a;
 
-    static int n, S, answer = Integer.MAX_VALUE;
-    static int[] arr;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
-        S = Integer.parseInt(st.nextToken());
-        arr = new int[n];
+        s = Integer.parseInt(st.nextToken());
+        a = new int[n];
         st = new StringTokenizer(br.readLine());
-        for(int i = 0; i < n; i++){
-            arr[i] = Integer.parseInt(st.nextToken());
+        for (int i = 0; i < n; i++) {
+            a[i] = Integer.parseInt(st.nextToken());
         }
-        int left = 0, right = 0, sum = 0;
-        while(true){
-            if(S <= sum){
-                answer = Math.min(answer, right - left);
-                sum -= arr[left++];
-            }
-            else if(right == n)break;
-            else sum += arr[right++];
+
+        int l = 0, r = 0, sum = 0;
+        while (true) {
+            if (sum >= s) {
+                ans = Math.min(ans, r - l);
+                sum -= a[l++];
+            } else if (r == n) break;
+            else if (sum < s) sum += a[r++];
         }
-        if(answer == Integer.MAX_VALUE) System.out.println(0);
-        else System.out.println(answer);
+        if (ans != Integer.MAX_VALUE) System.out.println(ans);
+        else System.out.println(0);
     }
 }
