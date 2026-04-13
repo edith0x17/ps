@@ -18,11 +18,13 @@ public class Main {
 
         int l = 0, r = 0, sum = 0;
         while (true) {
+            if (sum >= s) sum -= a[l++];
+            else if (r == n) break;
+            else if (sum < s) sum += a[r++];
+
             if (sum >= s) {
                 ans = Math.min(ans, r - l);
-                sum -= a[l++];
-            } else if (r == n) break;
-            else if (sum < s) sum += a[r++];
+            }
         }
         if (ans != Integer.MAX_VALUE) System.out.println(ans);
         else System.out.println(0);
