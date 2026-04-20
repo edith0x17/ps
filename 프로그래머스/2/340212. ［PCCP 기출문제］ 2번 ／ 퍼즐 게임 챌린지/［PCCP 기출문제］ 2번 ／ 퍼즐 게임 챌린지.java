@@ -1,35 +1,30 @@
+import java.io.*;
+import java.util.*;
+
 class Solution {
     public int solution(int[] diffs, int[] times, long limit) {
-        int answer = 0;
-        int l = 1, r = 100_000;
-        while (l <= r) {
-            int mid = (l + r) / 2;
-            if (go(diffs, times, limit, mid)) {
+        int answer = 0, l = 1, r = 100_000;
+        while(l <= r){
+            int mid = (l + r)/ 2;
+            long sum = 0;
+            int time_prev = 0;
+            for(int i = 0; i < diffs.length; i++){
+                if(mid < diffs[i]){
+                    sum += (time_prev + times[i]) * (diffs[i] - mid) + times[i];
+                }else if(mid >= diffs[i]){
+                    sum += times[i];
+                }
+                time_prev = times[i];
+            }
+            if(limit >= sum){
                 answer = mid;
+                //더작게
                 r = mid - 1;
-            } else {
+            }else{//limit < sum
+                //더크게
                 l = mid + 1;
             }
         }
         return answer;
-    }
-
-    static boolean go(int[] diffs, int[] times, long limit, int level) {
-        int n = diffs.length;
-        long total = 0;
-
-        for (int i = 0; i < n; i++) {
-            if (level >= diffs[i]) {
-                total += times[i];
-            } else {
-                if (i == 0) return false; // 첫 퍼즐에서 틀리는 경우는 말이 안됨
-                long cnt = diffs[i] - level;
-                total += (long)(times[i - 1] + times[i]) * cnt + times[i];
-            }
-
-            if (total > limit) return false; // 가지치기
-        }
-
-        return true;
     }
 }
