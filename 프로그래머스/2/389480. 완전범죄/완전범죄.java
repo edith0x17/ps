@@ -1,40 +1,38 @@
-import java.io.*;
 import java.util.*;
 
 class Solution {
-    static final int INF = Integer.MAX_VALUE;
-    static int l;
-    static int[][] dp;
     public int solution(int[][] info, int n, int m) {
-        l = info.length;
-        dp = new int[l + 1][m];
-        // init
-        for(int [] temp: dp){
-            Arrays.fill(temp, INF);
+        int answer = -1;
+        int[][] dp = new int[41][121];
+        for (int[] row : dp) {
+            Arrays.fill(row, Integer.MAX_VALUE);
         }
         dp[0][0] = 0;
-        
-        // logic
-        for(int i = 0; i < l; i++){
-            int aTrace = info[i][0];
-            int bTrace = info[i][1];
-            for(int b = 0; b < m; b++){
-                if(dp[i][b] == INF)continue;
-                // A
-                dp[i + 1][b] = Math.min(dp[i + 1][b], dp[i][b] + aTrace);       
-                // B
-                int newB = b + bTrace;
-                if(newB < m){
-                    dp[i + 1][newB] = Math.min(dp[i + 1][newB], dp[i][b]);
+
+        for (int i = 0; i < info.length; i++) {
+            for (int a = 0; a < 121; a++) {
+                if (dp[i][a] == Integer.MAX_VALUE) continue;
+
+                // A가 훔침
+                int nextA = a + info[i][0];
+                if (nextA < n) {
+                    dp[i + 1][nextA] = Math.min(dp[i + 1][nextA], dp[i][a]);
+                }
+
+                // B가 훔침
+                int nextB = dp[i][a] + info[i][1];
+                if (nextB < m) {
+                    dp[i + 1][a] = Math.min(dp[i + 1][a], nextB);
                 }
             }
         }
-        int answer = INF;
-        for (int b = 0; b < m; b++) {
-            if (dp[l][b] < n) {
-                answer = Math.min(answer, dp[l][b]);
+
+        // 답 구하기
+        for (int a = 0; a < 121; a++) {
+            if (dp[info.length][a] != Integer.MAX_VALUE) {
+                return a;
             }
         }
-        return answer == INF ? -1 : answer;
+        return -1;
     }
 }
