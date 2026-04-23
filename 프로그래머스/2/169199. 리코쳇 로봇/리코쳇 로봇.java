@@ -3,9 +3,8 @@ import java.util.*;
 class Solution {
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
-    static int n, m;
+    static int n, m, sx, sy, ex, ey;
     static int[][] a;
-    static int sx, sy, ex, ey;
 
     public int solution(String[] board) {
         int answer = -1;
@@ -14,31 +13,27 @@ class Solution {
         a = new int[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (board[i].charAt(j) == '.') a[i][j] = 0;
-                else if (board[i].charAt(j) == 'R') {
-                    a[i][j] = 0;
+                if (board[i].charAt(j) == 'R') {
                     sx = i;
                     sy = j;
                 } else if (board[i].charAt(j) == 'G') {
-                    a[i][j] = 0;
                     ex = i;
                     ey = j;
-                } else if (board[i].charAt(j) == 'D') a[i][j] = 1;
+                } else if (board[i].charAt(j) == 'D') {
+                    a[i][j] = 1;
+                }
             }
         }
 
-        Queue<int[]> q = new ArrayDeque<>();
         boolean[][] visited = new boolean[n][m];
-        q.offer(new int[]{sx, sy, 0});
+        Queue<int[]> q = new ArrayDeque<>();
         visited[sx][sy] = true;
+        q.offer(new int[]{sx, sy, 0});
         while (!q.isEmpty()) {
-            int[] tmp = q.poll();
-            int x = tmp[0], y = tmp[1], cnt = tmp[2];
+            int[] cur = q.poll();
+            int x = cur[0], y = cur[1], cnt = cur[2];
 
-            if (x == ex && y == ey) {
-                answer = cnt;
-                break;
-            }
+            if (x == ex && y == ey) return cnt;
 
             for (int i = 0; i < 4; i++) {
                 int nx = x, ny = y;
