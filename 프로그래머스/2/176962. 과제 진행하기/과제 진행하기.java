@@ -3,26 +3,26 @@ import java.util.*;
 class Solution {
     public String[] solution(String[][] plans) {
         String[] answer = {};
-        ArrayList<Data> adj = new ArrayList<>();
+        ArrayList<Data> list = new ArrayList<>();
         for (String[] p : plans) {
-            adj.add(new Data(p[0], timeCal(p[1]), Integer.parseInt(p[2])));
+            list.add(new Data(p[0], timeCal(p[1]), Integer.parseInt(p[2])));
         }
-        adj.sort((a, b) -> a.start - b.start);//오름차순
+        Collections.sort(list, (a, b) -> a.start - b.start);//오름차순
+
         ArrayList<String> ret = new ArrayList<>();
         Stack<Data> stk = new Stack<>();
-        for (int i = 0; i < adj.size() - 1; i++) {
-            Data cur = adj.get(i);
-            Data next = adj.get(i + 1);
+        for (int i = 0; i < list.size() - 1; i++) {
+            Data cur = list.get(i);
+            Data next = list.get(i + 1);
             int available = next.start - cur.start;
             if (cur.remain <= available) {
                 ret.add(cur.name);
                 int extra = available - cur.remain;
                 while (!stk.isEmpty() && extra > 0) {
                     Data prev = stk.pop();
-
                     if (prev.remain <= extra) {
-                        extra -= prev.remain;
                         ret.add(prev.name);
+                        extra -= prev.remain;
                     } else {
                         prev.remain -= extra;
                         extra = 0;
@@ -34,7 +34,7 @@ class Solution {
                 stk.push(cur);
             }
         }
-        ret.add(adj.get(adj.size() - 1).name);//for
+        ret.add(list.get(list.size() - 1).name);//for
         while (!stk.isEmpty()) {//stk
             ret.add(stk.pop().name);
         }
