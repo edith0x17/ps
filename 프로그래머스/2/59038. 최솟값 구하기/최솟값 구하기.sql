@@ -1,4 +1,4 @@
-select DATETIME as '시간'
-from ANIMAL_INS
-order by DATETIME asc
-limit 1;
+SELECT DATETIME AS 시간
+FROM ANIMAL_INS
+ORDER BY 시간 ASC
+LIMIT 1;
