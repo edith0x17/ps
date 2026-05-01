@@ -2,43 +2,43 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<Integer, Integer> mp = new HashMap<>();//num, inTime
-        ArrayList<Data> list = new ArrayList<>();//num, parkedTime
-        for (int i = 0; i < records.length; i++) {
-            String[] arr = records[i].split(" ");
-            int t = timeCal(arr[0]), num = Integer.parseInt(arr[1]);
-            String type = arr[2];
-            if (type.equals("IN")) {
-                mp.put(num, t);
-            } else {
-                int parked = t - mp.get(num);
+        Map<Integer, Integer> mp = new HashMap<>();//차 시간
+        ArrayList<Data> list = new ArrayList<>();
+        for (String s : records) {
+            String[] tmp = s.split(" ");
+            //tmp[0] tmp[1] tmp[2]
+            //시간 차 type
+            int t = timeCal(tmp[0]), num = Integer.parseInt(tmp[1]);
+
+            if (tmp[2].equals("IN")) {
+                mp.put(num, t);//차 시간
+            } else {//OUT
+                list.add(new Data(num, t - mp.get(num)));
                 mp.remove(num);
-                list.add(new Data(num, parked));
             }
         }
         for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
-            int num = entry.getKey(), parked = timeCal("23:59") - entry.getValue();
+            int num = entry.getKey();
+            int parked = timeCal("23:59") - entry.getValue();
             list.add(new Data(num, parked));
         }
 
-        Map<Integer, Integer> total = new HashMap<>();
+        mp = new HashMap<>();
         for (Data d : list) {
-            total.put(d.num, total.getOrDefault(d.num, 0) + d.price);
+            mp.put(d.num, mp.getOrDefault(d.num, 0) + d.price);
         }
-
-        ArrayList<Data> result = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : total.entrySet()) {
-            int num = entry.getKey(), time = entry.getValue();
+        list = new ArrayList<>();
+        for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
+            int num = entry.getKey();
+            int time = entry.getValue();
             int fee = fees[1];
-            if (time > fees[0]) {
-                fee += (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
-            }
-            result.add(new Data(num, fee));
+            if (time > fees[0]) fee += (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
+            list.add(new Data(num, fee));
         }
-        result.sort((a, b) -> a.num - b.num);
-        int[] answer = new int[result.size()];
-        for (int i = 0; i < result.size(); i++) {
-            answer[i] = result.get(i).price;
+        list.sort((a, b) -> a.num - b.num);
+        int[] answer = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            answer[i] = list.get(i).price;
         }
         return answer;
     }
@@ -50,7 +50,7 @@ class Solution {
     }
 
     static class Data {
-        int num, price; // 여기서 price는 중간에는 parkedTime, 마지막에는 fee로 사용
+        int num, price;//price -> 주차, 가격
 
         public Data(int num, int price) {
             this.num = num;
