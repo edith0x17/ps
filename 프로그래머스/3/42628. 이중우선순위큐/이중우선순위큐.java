@@ -3,21 +3,29 @@ import java.util.*;
 class Solution {
     public int[] solution(String[] operations) {
         int[] answer = {};
-        TreeMap<Integer, Integer> map = new TreeMap<>();
-        for (String s : operations) {
-            String[] ss = s.split(" ");
-            int num = Integer.parseInt(ss[1]);
-            if (ss[0].equals("I")) {//I
-                map.put(num, map.getOrDefault(num, 0) + 1);
-            } else {//D
-                if (map.isEmpty()) continue;
-
-                int key = (num == 1) ? map.lastKey() : map.firstKey();//최댓값 : 최솟값
-                if (map.get(key) == 1) map.remove(key);
-                else map.remove(key);
+        TreeMap<Integer, Integer> mp = new TreeMap<>();
+        for (String operation : operations) {
+            String[] tmp = operation.split(" ");
+            int num = Integer.parseInt(tmp[1]);//num, 1, -1
+            if (tmp[0].equals("I")) {
+                mp.put(num, mp.getOrDefault(num, 0) + 1);
+            } else {
+                if (mp.isEmpty()) continue;//사이즈
+                
+                if (num == 1) {
+                    int mx = mp.lastKey();//최대
+                    int cnt = mp.get(mx);
+                    if (cnt - 1 == 0) mp.remove(mx);
+                    else mp.put(mx, cnt - 1);
+                } else {//-1
+                    int mi = mp.firstKey();//최소
+                    int cnt = mp.get(mi);
+                    if (cnt - 1 == 0) mp.remove(mi);
+                    else mp.put(mi, cnt - 1);
+                }
             }
         }
-        if (map.isEmpty()) return new int[]{0, 0};
-        return new int[]{map.lastKey(), map.firstKey()};
+        if (mp.isEmpty()) return new int[]{0, 0};
+        else return new int[]{mp.lastKey(), mp.firstKey()};
     }
 }
