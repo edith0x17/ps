@@ -2,43 +2,39 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<Integer, Integer> mp = new HashMap<>();//차 시간
+        Map<String, Integer> mp = new HashMap<>();//번호, 시각
         ArrayList<Data> list = new ArrayList<>();
-        for (String s : records) {
-            String[] tmp = s.split(" ");
-            //tmp[0] tmp[1] tmp[2]
-            //시간 차 type
-            int t = timeCal(tmp[0]), num = Integer.parseInt(tmp[1]);
-
+        for (String record : records) {
+            String[] tmp = record.split(" ");//시각, 차량번호, 내역
             if (tmp[2].equals("IN")) {
-                mp.put(num, t);//차 시간
+                mp.put(tmp[1], timeCal(tmp[0]));//차량번호, 시각
             } else {//OUT
-                list.add(new Data(num, t - mp.get(num)));
-                mp.remove(num);
+                list.add(new Data(tmp[1], timeCal(tmp[0]) - mp.get(tmp[1])));//차량번호, 시각
+                mp.remove(tmp[1]);
             }
         }
-        for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
-            int num = entry.getKey();
-            int parked = timeCal("23:59") - entry.getValue();
-            list.add(new Data(num, parked));
+        for (Map.Entry<String, Integer> entry : mp.entrySet()) {
+            String num = entry.getKey();
+            int time = entry.getValue();
+            list.add(new Data(num, timeCal("23:59") - time));
         }
-
         mp = new HashMap<>();
         for (Data d : list) {
-            mp.put(d.num, mp.getOrDefault(d.num, 0) + d.price);
+            mp.put(d.num, mp.getOrDefault(d.num, 0) + d.time);
         }
-        list = new ArrayList<>();
-        for (Map.Entry<Integer, Integer> entry : mp.entrySet()) {
-            int num = entry.getKey();
+        ArrayList<Data> ret = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : mp.entrySet()) {
+            String num = entry.getKey();
             int time = entry.getValue();
-            int fee = fees[1];
-            if (time > fees[0]) fee += (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
-            list.add(new Data(num, fee));
+            //기본 시간(분), 기본 요금(원), 단위 시간(분), 단위 요금(원)
+            int price = fees[1];
+            if (time > fees[0]) price += (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
+            ret.add(new Data(num, price));
         }
-        list.sort((a, b) -> a.num - b.num);
-        int[] answer = new int[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            answer[i] = list.get(i).price;
+        ret.sort((a, b) -> a.num.compareTo(b.num));//문자열비교
+        int[] answer = new int[ret.size()];
+        for (int i = 0; i < ret.size(); i++) {
+            answer[i] = ret.get(i).time;
         }
         return answer;
     }
@@ -50,11 +46,12 @@ class Solution {
     }
 
     static class Data {
-        int num, price;//price -> 주차, 가격
+        String num;
+        int time;
 
-        public Data(int num, int price) {
+        public Data(String num, int time) {
             this.num = num;
-            this.price = price;
+            this.time = time;
         }
     }
 }
