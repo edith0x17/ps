@@ -4,21 +4,20 @@ class Solution {
     public int solution(String[][] book_time) {
         int answer = 0;
         ArrayList<Data> list = new ArrayList<>();
-        for (int i = 0; i < book_time.length; i++) {
-            int start = timeCal(book_time[i][0]);
-            int end = timeCal(book_time[i][1]);
-            list.add(new Data(start, end + 10));
+        for (String[] s : book_time) {
+            list.add(new Data(timeCal(s[0]), timeCal(s[1]) + 10));
         }
-        Collections.sort(list, (a, b) -> a.start - b.start);//오름차순정렬
-        PriorityQueue<Integer> pq = new PriorityQueue<>();//end
+        list.sort((a, b) -> a.s - b.s);//시작 오름차순
+        PriorityQueue<Integer> pq = new PriorityQueue<>(); // 현재 사용 중인 객실들의 종료 시간
         for (int i = 0; i < list.size(); i++) {
             Data cur = list.get(i);
-            if (!pq.isEmpty() && pq.peek() <= cur.start) {
+            while (!pq.isEmpty() && pq.peek() <= cur.s) {
                 pq.poll();
             }
-            pq.offer(cur.end);
+            pq.offer(cur.e);
+            answer = Math.max(answer, pq.size());
         }
-        return pq.size();
+        return answer;
     }
 
     static int timeCal(String s) {
@@ -28,11 +27,11 @@ class Solution {
     }
 
     static class Data {
-        int start, end;
+        int s, e;
 
-        public Data(int start, int end) {
-            this.start = start;
-            this.end = end;
+        public Data(int s, int e) {
+            this.s = s;
+            this.e = e;
         }
     }
 }
