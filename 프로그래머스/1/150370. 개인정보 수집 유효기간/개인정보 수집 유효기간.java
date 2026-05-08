@@ -1,33 +1,35 @@
+// 40
 import java.util.*;
 
 class Solution {
     public int[] solution(String today, String[] terms, String[] privacies) {
+        String[] ttt = today.split("\\.");
+        int td = dayCal(ttt[0], ttt[1], ttt[2]);
         Map<String, Integer> mp = new HashMap<>();
-        for (String s : terms) {
-            String[] ss = s.split(" ");
+        for(String s: terms){
+            String[] ss = s.split(" ");//ss[0] ss[1]
             mp.put(ss[0], Integer.parseInt(ss[1]) * 28);
         }
-        int target = dayCal(today), idx = 1;
         ArrayList<Integer> ret = new ArrayList<>();
-        for (String s : privacies) {
-            String[] ss = s.split(" ");
-            int day = dayCal(ss[0]) + mp.get(ss[1]);
-            if (target >= day) ret.add(idx);
+        int idx = 1;
+        for(String s: privacies){
+            String[] ss = s.split(" ");//ss[0](날짜) ss[1](알파벳)
+            String[] tmp = ss[0].split("\\.");
+            int day = dayCal(tmp[0], tmp[1], tmp[2]);
+            if(day + mp.get(ss[1]) <= td)ret.add(idx);
             idx++;
         }
         int[] answer = new int[ret.size()];
-        for (int i = 0; i < ret.size(); i++) {
+        for(int i = 0; i < ret.size(); i++){
             answer[i] = ret.get(i);
         }
         return answer;
     }
-
-    static int dayCal(String s) {
-        String[] ss = s.split("\\.");
-        int y = Integer.parseInt(ss[0]);
-        int m = Integer.parseInt(ss[1]);
-        int d = Integer.parseInt(ss[2]);
-        return y * 12 * 28 + m * 28 + d;
+    
+    static int dayCal(String y, String m, String d){
+        int yy = Integer.parseInt(y);
+        int mm = Integer.parseInt(m);
+        int dd = Integer.parseInt(d);
+        return yy * 12 * 28 + mm * 28 + dd;
     }
 }
-//모든 달은 28일까지 있다고 가정
