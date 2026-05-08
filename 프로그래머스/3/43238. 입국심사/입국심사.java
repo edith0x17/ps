@@ -2,21 +2,21 @@ import java.util.*;
 
 class Solution {
     public long solution(int n, int[] times) {
-        // “이 시간 안에 n명 처리 가능?”
         long answer = 0;
         Arrays.sort(times);
-        long left = 1, right = (long) times[times.length - 1] * n;
-        while (left <= right) {
+        long left = 1, right = 1_000_000_004 * (long)n;
+        while(left <= right){
             long mid = (left + right) / 2;
-            //mid시간
-            long cnt = 0;
-            for (int i = 0; i < times.length; i++) {
-                cnt += mid / times[i];
+            //mid
+            long sum = 0;
+            for(int i = 0; i < times.length; i++){
+                sum += mid / times[i];
             }
-            if (cnt >= n) {
+            if(sum >= n){
+                System.out.println(mid);
                 answer = mid;
                 right = mid - 1;
-            } else {
+            }else{
                 left = mid + 1;
             }
         }
