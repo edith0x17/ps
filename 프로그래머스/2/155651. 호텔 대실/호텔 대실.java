@@ -1,37 +1,30 @@
+// 8
 import java.util.*;
 
 class Solution {
     public int solution(String[][] book_time) {
         int answer = 0;
-        ArrayList<Data> list = new ArrayList<>();
-        for (String[] s : book_time) {
-            list.add(new Data(timeCal(s[0]), timeCal(s[1]) + 10));
+        int[][] tmp = new int[book_time.length][2];
+        for(int i = 0; i < book_time.length; i++){
+            tmp[i][0] = timeCal(book_time[i][0]);
+            tmp[i][1] = timeCal(book_time[i][1]) + 10;
         }
-        list.sort((a, b) -> a.s - b.s);//시작 오름차순
-        PriorityQueue<Integer> pq = new PriorityQueue<>(); // 현재 사용 중인 객실들의 종료 시간
-        for (int i = 0; i < list.size(); i++) {
-            Data cur = list.get(i);
-            while (!pq.isEmpty() && pq.peek() <= cur.s) {
+        Arrays.sort(tmp, (a, b) -> a[0] - b[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        for(int[] ary: tmp){
+            int s = ary[0], e = ary[1];
+            while(!pq.isEmpty() && pq.peek() <= s){
                 pq.poll();
             }
-            pq.offer(cur.e);
+            pq.offer(e);
             answer = Math.max(answer, pq.size());
         }
         return answer;
     }
-
-    static int timeCal(String s) {
+    
+    static int timeCal(String s){
         int h = Integer.parseInt(s.substring(0, 2));
         int m = Integer.parseInt(s.substring(3, 5));
         return h * 60 + m;
-    }
-
-    static class Data {
-        int s, e;
-
-        public Data(int s, int e) {
-            this.s = s;
-            this.e = e;
-        }
     }
 }
