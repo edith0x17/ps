@@ -2,56 +2,61 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<String, Integer> mp = new HashMap<>();//번호, 시각
+        Map<Integer, Integer> mp = new HashMap<>();//<num, time>
         ArrayList<Data> list = new ArrayList<>();
-        for (String record : records) {
-            String[] tmp = record.split(" ");//시각, 차량번호, 내역
-            if (tmp[2].equals("IN")) {
-                mp.put(tmp[1], timeCal(tmp[0]));//차량번호, 시각
-            } else {//OUT
-                list.add(new Data(tmp[1], timeCal(tmp[0]) - mp.get(tmp[1])));//차량번호, 시각
-                mp.remove(tmp[1]);
+        for(String s : records){//time, num, in/out
+            String[] ss = s.split(" ");
+            if(ss[2].equals("IN")){
+                mp.put(Integer.parseInt(ss[1]), timeCal(ss[0]));
+            }else{//"OUT"
+                int num = Integer.parseInt(ss[1]);
+                int time = timeCal(ss[0]) - mp.get(num);
+                mp.remove(num);
+                list.add(new Data(num, time));
             }
         }
-        for (Map.Entry<String, Integer> entry : mp.entrySet()) {
-            String num = entry.getKey();
-            int time = entry.getValue();
-            list.add(new Data(num, timeCal("23:59") - time));
+        for(Map.Entry<Integer, Integer> entry : mp.entrySet()){
+            int num = entry.getKey();
+            int time = timeCal("23:59") - entry.getValue();
+            list.add(new Data(num, time));
         }
         mp = new HashMap<>();
-        for (Data d : list) {
-            mp.put(d.num, mp.getOrDefault(d.num, 0) + d.time);
+        for(int i = 0; i < list.size(); i++){
+            Data cur = list.get(i);
+            mp.put(cur.num, mp.getOrDefault(cur.num, 0) + cur.price);
         }
-        ArrayList<Data> ret = new ArrayList<>();
-        for (Map.Entry<String, Integer> entry : mp.entrySet()) {
-            String num = entry.getKey();
+        list = new ArrayList<>();
+        for(Map.Entry<Integer, Integer> entry : mp.entrySet()){
+            int num = entry.getKey();
             int time = entry.getValue();
-            //기본 시간(분), 기본 요금(원), 단위 시간(분), 단위 요금(원)
             int price = fees[1];
-            if (time > fees[0]) price += (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
-            ret.add(new Data(num, price));
+            if(time >= fees[0]){
+                price += (int)Math.ceil((double)(time - fees[0]) / fees[2]) * fees[3];
+            }
+            list.add(new Data(num, price));
         }
-        ret.sort((a, b) -> a.num.compareTo(b.num));//문자열비교
-        int[] answer = new int[ret.size()];
-        for (int i = 0; i < ret.size(); i++) {
-            answer[i] = ret.get(i).time;
+        list.sort((a, b) -> a.num - b.num);
+        int[] answer = new int[list.size()];
+        for(int i = 0; i < list.size(); i++){
+            answer[i] = list.get(i).price;
         }
         return answer;
     }
-
-    static int timeCal(String s) {
+    
+    static int timeCal(String s){
         int h = Integer.parseInt(s.substring(0, 2));
         int m = Integer.parseInt(s.substring(3, 5));
         return h * 60 + m;
     }
-
-    static class Data {
-        String num;
-        int time;
-
-        public Data(String num, int time) {
+    
+    static class Data{
+        int num, price;//시간 -> 가격
+        
+        public Data(int num, int price){
             this.num = num;
-            this.time = time;
+            this.price = price;
         }
     }
 }
+
+// map + 23:59 -> list -> map -> ret ->
