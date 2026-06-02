@@ -3,24 +3,23 @@ import java.util.*;
 class Solution {
     public int solution(int cacheSize, String[] cities) {
         if (cacheSize == 0) return cities.length * 5;
-        
-        int answer = 0;
         for (int i = 0; i < cities.length; i++) {
             cities[i] = cities[i].toLowerCase();
         }
-        ArrayList<String> cache = new ArrayList<>();
+        int answer = 0;
+        ArrayList<String> list = new ArrayList<>();
         for (String city : cities) {
-            if (cache.contains(city)) {
+            if (list.contains(city)) {
                 answer += 1;
-                cache.remove(city);
-                cache.add(city);
+                list.remove(city);
+                list.add(city);
             } else {
                 answer += 5;
-                if (cache.size() < cacheSize) {
-                    cache.add(city);
+                if (list.size() < cacheSize) {
+                    list.add(city);
                 } else {
-                    cache.remove(cache.get(0));
-                    cache.add(city);
+                    list.remove(list.get(0));
+                    list.add(city);
                 }
             }
         }
