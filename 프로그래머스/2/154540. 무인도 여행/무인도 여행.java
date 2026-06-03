@@ -3,56 +3,60 @@ import java.util.*;
 class Solution {
     static int[] dx = {-1, 0, 1, 0};
     static int[] dy = {0, 1, 0, -1};
-    
-    static int n, m;
-    static int[][] a;
+
     static boolean[][] visited;
-    static Queue<int[]> q = new ArrayDeque<>();
-    
+    static Queue<int[]> q;
+
     public int[] solution(String[] maps) {
-        n = maps.length; m = maps[0].length();
-        a = new int[n][m];
-        visited = new boolean[n][m];
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                if(maps[i].charAt(j) == 'X') a[i][j] = -999;
-                else a[i][j] = maps[i].charAt(j) - '0';
+        int n = maps.length, m = maps[0].length();
+        int[][] map = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                char ch = maps[i].charAt(j);
+                if (ch == 'X') map[i][j] = -1;
+                else if (ch >= '1' && ch <= '9') map[i][j] = ch - '0';
             }
         }
         ArrayList<Integer> ret = new ArrayList<>();
-        for(int i = 0; i < n; i++){
-            for(int j = 0; j < m; j++){
-                if(a[i][j] != -999 && !visited[i][j]){
-                    ret.add(bfs(i, j));
+        visited = new boolean[n][m];
+        q = new ArrayDeque<>();
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (map[i][j] != -1 && !visited[i][j]) {
+                    int tmp = bfs(i, j, n, m, map);
+                    if (tmp != 0) ret.add(tmp);
                 }
             }
         }
         int[] answer = new int[ret.size()];
-        for (int i = 0; i < ret.size(); i++) {
-            answer[i] = ret.get(i);
+        if (ret.size() == 0) return new int[]{-1};
+        else {
+            for (int i = 0; i < ret.size(); i++) {
+                answer[i] = ret.get(i);
+            }
+            Arrays.sort(answer);
         }
-        Arrays.sort(answer);
-        if(answer.length == 0)return new int[]{-1};
-        else return answer;
+        return answer;
     }
-    
-    static int bfs(int x, int y){
-        int ret = a[x][y];
+
+    static int bfs(int x, int y, int n, int m, int[][] map) {
+        int ret = map[x][y];
+
         visited[x][y] = true;
         q.offer(new int[]{x, y});
-        while(!q.isEmpty()){
+        while (!q.isEmpty()) {
             int[] cur = q.poll();
-            x = cur[0]; y = cur[1];
-            for(int i = 0; i < 4; i++){
-                int nx = x + dx[i];
-                int ny = y + dy[i];
-                if(nx < 0 || nx >= n || ny < 0 || ny >= m)continue;
-                if(visited[nx][ny])continue;
-                if(a[nx][ny] == -999)continue;
-                ret += a[nx][ny];
+            for (int i = 0; i < 4; i++) {
+                int nx = cur[0] + dx[i];
+                int ny = cur[1] + dy[i];
+                if (nx < 0 || nx >= n || ny < 0 || ny >= m) continue;
+                if (visited[nx][ny]) continue;
+                if (map[nx][ny] == -1) continue;
+                ret += map[nx][ny];
                 visited[nx][ny] = true;
                 q.offer(new int[]{nx, ny});
             }
+
         }
         return ret;
     }
