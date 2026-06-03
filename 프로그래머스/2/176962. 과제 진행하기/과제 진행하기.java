@@ -1,14 +1,16 @@
-import java.lang.reflect.Array;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Stack;
 
 class Solution {
     public String[] solution(String[][] plans) {
         String[] answer = {};
         ArrayList<Data> list = new ArrayList<>();
-        for (String[] plan : plans) {
-            list.add(new Data(plan[0], timeCal(plan[1]), Integer.parseInt(plan[2])));
+        for (String[] ss : plans) {
+            list.add(new Data(ss[0], timeCal(ss[1]), Integer.parseInt(ss[2])));
         }
-        list.sort((a, b) -> a.start - b.start);//start오름차순
+        Collections.sort(list, (a, b) -> (a.start - b.start));
+
         ArrayList<String> ret = new ArrayList<>();
         Stack<Data> stk = new Stack<>();
         for (int i = 0; i < list.size() - 1; i++) {
@@ -20,8 +22,7 @@ class Solution {
                 int extra = available - cur.playTime;
                 while (!stk.isEmpty() && extra > 0) {
                     Data prev = stk.pop();
-
-                    if (extra >= prev.playTime) {
+                    if (prev.playTime <= extra) {
                         ret.add(prev.name);
                         extra -= prev.playTime;
                     } else {
@@ -35,8 +36,9 @@ class Solution {
                 stk.push(cur);
             }
         }
-        //list, stk순
+        //list처리
         ret.add(list.get(list.size() - 1).name);
+        //stk처리
         while (!stk.isEmpty()) {
             Data prev = stk.pop();
             ret.add(prev.name);
