@@ -1,62 +1,64 @@
 import java.util.*;
 
 class Solution {
+    static int n, m;
+    static int[][] map;
 
     public boolean solution(int[][] key, int[][] lock) {
-        int n = lock.length;//n
-        int m = key.length;//m
-        int[][] map = new int[n * 3][n * 3];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                map[i + n][j + n] = lock[i][j];
+        boolean answer = false;
+        n = key.length;
+        m = lock.length;
+        map = new int[m * 3][m * 3];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < m; j++) {
+                map[i + m][j + m] = lock[i][j];
             }
         }
-        int mapSize = n * 3;
-        for (int r = 0; r < 4; r++) {
-            for (int x = 0; x <= mapSize - m; x++) {
-                for (int y = 0; y <= mapSize - m; y++) {//key 시작점
 
-                    for (int i = 0; i < m; i++) {
-                        for (int j = 0; j < m; j++) {
-                            map[i + x][j + y] += key[i][j];//x, y로 보정
+        for (int d = 0; d < 4; d++) {//90
+
+            for (int x = 0; x <= map.length - n; x++) {//key 시작점
+                for (int y = 0; y <= map.length - n; y++) {
+
+                    for (int i = 0; i < n; i++) {//key올림
+                        for (int j = 0; j < n; j++) {
+                            map[x + i][y + j] += key[i][j];
                         }
                     }
-
-                    if (check(map, n)) {
-                        return true;
-                    }
-
-                    for (int i = 0; i < m; i++) {
-                        for (int j = 0; j < m; j++) {
-                            map[i + x][j + y] -= key[i][j];//x, y로 보정
+                    if (check(m, map)) return true;
+                    for (int i = 0; i < n; i++) {//key내림
+                        for (int j = 0; j < n; j++) {
+                            map[x + i][y + j] -= key[i][j];
                         }
                     }
                 }
             }
-            key = rotate(key);
+
+            //현재방향을 모두 확인했으면 key를 90도 회전한다
+            key = rotate(n, key);
         }
-        return false;
+
+        return answer;
     }
 
-    static boolean check(int[][] map, int n) {
-        for (int i = n; i < n * 2; i++) {
-            for (int j = n; j < n * 2; j++) {
-                if (map[i][j] != 1) {
-                    return false;
-                }
+    static int[][] rotate(int n, int[][] key) {
+        int[][] ret = new int[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                ret[j][n - 1 - i] = key[i][j];
+            }
+        }
+
+        return ret;
+    }
+
+    static boolean check(int m, int[][] map) {
+        for (int i = m; i < m * 2; i++) {
+            for (int j = m; j < m * 2; j++) {
+                if (map[i][j] != 1) return false;
             }
         }
         return true;
-    }
-
-    static int[][] rotate(int[][] key) {
-        int m = key.length;
-        int[][] ret = new int[m][m];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < m; j++) {
-                ret[j][m - 1 - i] = key[i][j];
-            }
-        }
-        return ret;
     }
 }
