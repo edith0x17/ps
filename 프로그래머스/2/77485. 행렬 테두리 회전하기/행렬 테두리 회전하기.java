@@ -3,47 +3,53 @@ import java.util.*;
 class Solution {
     public int[] solution(int rows, int columns, int[][] queries) {
         int[] answer = new int[queries.length];
-        int idx = 1;
-        int[][] a = new int[rows][columns];
+        int[][] map = new int[rows][columns];
+        int cnt = 1;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                a[i][j] = idx++;
+                map[i][j] = cnt++;
             }
         }
-        idx = 0;
+        int idx = 0;
         for (int[] query : queries) {
-            int mi = Integer.MAX_VALUE;
-            int sx = query[0] - 1, sy = query[1] - 1, ex = query[2] - 1, ey = query[3] - 1;
-            int n = ex - sx + 1, m = ey - sy + 1;
-            for (int layer = 0; layer < 1; layer++) {
-                int top = layer + sx, bot = n - 1 - layer + sx;
-                int left = layer + sy, right = m - 1 - layer + sy;
-                int tmp = a[top][left];
-                mi = Math.min(mi, tmp);
-                //왼
-                for (int i = top; i < bot; i++) {
-                    a[i][left] = a[i + 1][left];
-                    mi = Math.min(mi, a[i][left]);
-                }
-                //아래
-                for (int j = left; j < right; j++) {
-                    a[bot][j] = a[bot][j + 1];
-                    mi = Math.min(mi, a[bot][j]);
-                }
-                //오른쪽
-                for (int i = bot; i > top; i--) {
-                    a[i][right] = a[i - 1][right];
-                    mi = Math.min(mi, a[i][right]);
-                }
-                //위
-                for (int j = right; j > left; j--) {
-                    a[top][j] = a[top][j - 1];
-                    mi = Math.min(mi, a[top][j]);
-                }
-                a[top][left + 1] = tmp;
-                answer[idx++] = mi;
+            int sx = query[0] - 1;
+            int sy = query[1] - 1;
+            int ex = query[2] - 1;
+            int ey = query[3] - 1;
+
+            int tmp = map[sx][sy];
+            int min = tmp;
+
+            // left : 아래 값을 위로
+            for (int x = sx; x < ex; x++) {
+                map[x][sy] = map[x + 1][sy];
+                min = Math.min(min, map[x][sy]);
             }
+
+            // bottom : 오른쪽 값을 왼쪽으로
+            for (int y = sy; y < ey; y++) {
+                map[ex][y] = map[ex][y + 1];
+                min = Math.min(min, map[ex][y]);
+            }
+
+            // right : 위 값을 아래로
+            for (int x = ex; x > sx; x--) {
+                map[x][ey] = map[x - 1][ey];
+                min = Math.min(min, map[x][ey]);
+            }
+
+            // top : 왼쪽 값을 오른쪽으로
+            for (int y = ey; y > sy; y--) {
+                map[sx][y] = map[sx][y - 1];
+                min = Math.min(min, map[sx][y]);
+            }
+
+            // 처음 좌상단 값 넣기
+            map[sx][sy + 1] = tmp;
+
+            answer[idx++] = min;
         }
+
         return answer;
     }
 }
