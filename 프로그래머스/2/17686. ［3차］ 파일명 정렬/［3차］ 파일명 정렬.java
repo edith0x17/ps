@@ -2,50 +2,52 @@ import java.util.*;
 
 class Solution {
     public String[] solution(String[] files) {
-        String[] answer = {};
-        ArrayList<Data> list = new ArrayList<>();
+        String[] answer = new String[files.length];
+        PriorityQueue<Data> pq = new PriorityQueue<>();
         for (int i = 0; i < files.length; i++) {
-            int s = -1, e = -1;
-            for (int j = 0; j < files[i].length(); j++) {
-                if (files[i].charAt(j) >= '0' && files[i].charAt(j) <= '9') {
-                    s = j;
-                    break;
-                }
+            String s = files[i];
+            int start = 0;
+            while (start < s.length() && !Character.isDigit(s.charAt(start))) {
+                start++;
             }
-            e = s;
-            while (e < files[i].length() && files[i].charAt(e) >= '0' && files[i].charAt(e) <= '9') {
-                e++;
+            int end = start;
+            while (end < s.length() && Character.isDigit(s.charAt(end))) {
+                end++;
             }
-            String head = files[i].substring(0, s);
-            String number = files[i].substring(s, e);
-            list.add(new Data(files[i], head, Integer.parseInt(number), i));
+            //start, end -> 다음꺼
+            String head = s.substring(0, start);
+            int num = Integer.parseInt(s.substring(start, end));
+            String tail = s.substring(end);
+            pq.offer(new Data(s, head, tail, num, i));
         }
-        Collections.sort(list);
-        answer = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            answer[i] = list.get(i).ori;
+        int idx = 0;
+        while (!pq.isEmpty()) {
+            answer[idx++] = pq.poll().ori;
         }
         return answer;
     }
 
     static class Data implements Comparable<Data> {
-        String ori, head;
-        int number, idx;
+        String ori, head, tail;
+        int num, idx;
 
-        public Data(String ori, String head, int number, int idx) {
+        public Data(String ori, String head, String tail, int num, int idx) {
             this.ori = ori;
             this.head = head;
-            this.number = number;
+            this.tail = tail;
+            this.num = num;
             this.idx = idx;
         }
 
         @Override
         public int compareTo(Data o) {
-            int cmp = this.head.toLowerCase().compareTo(o.head.toLowerCase());
-            if (cmp != 0) return this.head.toLowerCase().compareTo(o.head.toLowerCase());
-            if (this.number != o.number) return Integer.compare(this.number, o.number);
-            return Integer.compare(this.idx, o.idx);
+            if (this.head.toUpperCase().compareTo(o.head.toUpperCase()) == 0) {
+                if (this.num == o.num) {
+                    return Integer.compare(this.idx, o.idx);//idx
+                }
+                return Integer.compare(this.num, o.num);//num
+            }
+            return this.head.toUpperCase().compareTo(o.head.toUpperCase());//head
         }
     }
 }
-//head number tail
