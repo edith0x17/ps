@@ -2,61 +2,44 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] fees, String[] records) {
-        Map<Integer, Integer> mp = new HashMap<>();//<num, time>
-        ArrayList<Data> list = new ArrayList<>();
-        for(String s : records){//time, num, in/out
+        HashMap<String, Integer> inTime = new HashMap<>();   //현재 입차 시간
+        HashMap<String, Integer> total = new HashMap<>();    //누적 주차 시간
+        for (String s : records) {
             String[] ss = s.split(" ");
-            if(ss[2].equals("IN")){
-                mp.put(Integer.parseInt(ss[1]), timeCal(ss[0]));
-            }else{//"OUT"
-                int num = Integer.parseInt(ss[1]);
-                int time = timeCal(ss[0]) - mp.get(num);
-                mp.remove(num);
-                list.add(new Data(num, time));
+            if (ss[2].equals("IN")) {
+                inTime.put(ss[1], timeCal(ss[0]));
+            } else {//"OUT"
+                int time = timeCal(ss[0]) - inTime.get(ss[1]);
+                total.put(ss[1], total.getOrDefault(ss[1], 0) + time);
+                inTime.remove(ss[1]);
             }
         }
-        for(Map.Entry<Integer, Integer> entry : mp.entrySet()){
-            int num = entry.getKey();
+        for (Map.Entry<String, Integer> entry : inTime.entrySet()) {
             int time = timeCal("23:59") - entry.getValue();
-            list.add(new Data(num, time));
+            total.put(entry.getKey(), total.getOrDefault(entry.getKey(), 0) + time);
         }
-        mp = new HashMap<>();
-        for(int i = 0; i < list.size(); i++){
-            Data cur = list.get(i);
-            mp.put(cur.num, mp.getOrDefault(cur.num, 0) + cur.price);
+
+        //차량번호 오름차순 정렬
+        ArrayList<String> cars = new ArrayList<>();
+        for (Map.Entry<String, Integer> entry : total.entrySet()) {
+            cars.add(entry.getKey());
         }
-        list = new ArrayList<>();
-        for(Map.Entry<Integer, Integer> entry : mp.entrySet()){
-            int num = entry.getKey();
-            int time = entry.getValue();
-            int price = fees[1];
-            if(time >= fees[0]){
-                price += (int)Math.ceil((double)(time - fees[0]) / fees[2]) * fees[3];
-            }
-            list.add(new Data(num, price));
-        }
-        list.sort((a, b) -> a.num - b.num);
-        int[] answer = new int[list.size()];
-        for(int i = 0; i < list.size(); i++){
-            answer[i] = list.get(i).price;
+        Collections.sort(cars);
+        int[] answer = new int[total.size()];
+        int idx = 0;
+        for (String car : cars) {
+            int time = total.get(car);
+            int price;
+            if (time <= fees[0]) price = fees[1];
+            else price = fees[1] + (int) Math.ceil((double) (time - fees[0]) / fees[2]) * fees[3];
+            answer[idx++] = price;
         }
         return answer;
     }
-    
-    static int timeCal(String s){
+
+    static int timeCal(String s) {
         int h = Integer.parseInt(s.substring(0, 2));
         int m = Integer.parseInt(s.substring(3, 5));
         return h * 60 + m;
     }
-    
-    static class Data{
-        int num, price;//시간 -> 가격
-        
-        public Data(int num, int price){
-            this.num = num;
-            this.price = price;
-        }
-    }
 }
-
-// map + 23:59 -> list -> map -> ret ->
