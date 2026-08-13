@@ -12,44 +12,32 @@ class Solution {
         }
         int idx = 0;
         for (int[] query : queries) {
-            int sx = query[0] - 1;
-            int sy = query[1] - 1;
-            int ex = query[2] - 1;
-            int ey = query[3] - 1;
-
+            int sx = query[0] - 1, sy = query[1] - 1, ex = query[2] - 1, ey = query[3] - 1;
             int tmp = map[sx][sy];
-            int min = tmp;
-
-            // left : 아래 값을 위로
-            for (int x = sx; x < ex; x++) {
-                map[x][sy] = map[x + 1][sy];
-                min = Math.min(min, map[x][sy]);
+            int ret = tmp;
+            //left
+            for (int i = sx; i < ex; i++) {
+                map[i][sy] = map[i + 1][sy];
+                ret = Math.min(ret, map[i][sy]);
             }
-
-            // bottom : 오른쪽 값을 왼쪽으로
-            for (int y = sy; y < ey; y++) {
-                map[ex][y] = map[ex][y + 1];
-                min = Math.min(min, map[ex][y]);
+            //bot
+            for (int i = sy; i < ey; i++) {
+                map[ex][i] = map[ex][i + 1];
+                ret = Math.min(ret, map[ex][i]);
             }
-
-            // right : 위 값을 아래로
-            for (int x = ex; x > sx; x--) {
-                map[x][ey] = map[x - 1][ey];
-                min = Math.min(min, map[x][ey]);
+            //right
+            for (int i = ex; i > sx; i--) {
+                map[i][ey] = map[i - 1][ey];
+                ret = Math.min(ret, map[i - 1][ey]);
             }
-
-            // top : 왼쪽 값을 오른쪽으로
-            for (int y = ey; y > sy; y--) {
-                map[sx][y] = map[sx][y - 1];
-                min = Math.min(min, map[sx][y]);
+            //top
+            for (int i = ey; i > sy; i--) {
+                map[sx][i] = map[sx][i - 1];
+                ret = Math.min(ret, map[sx][i]);
             }
-
-            // 처음 좌상단 값 넣기
             map[sx][sy + 1] = tmp;
-
-            answer[idx++] = min;
+            answer[idx++] = ret;
         }
-
         return answer;
     }
 }
