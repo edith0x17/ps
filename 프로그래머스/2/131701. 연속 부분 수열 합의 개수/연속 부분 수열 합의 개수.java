@@ -2,17 +2,20 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] elements) {
-        Set<Integer> set = new HashSet<>();
-        int n = elements.length;
-        int[] a = new int[n + n];
-        for(int i = 0; i < 2 * n; i++){
-            a[i] = elements[i % n];
+        int answer = 0;
+        int[] a = new int[elements.length * 2];
+        for (int i = 0; i < elements.length; i++) {
+            a[i] = elements[i];
         }
-        for(int k = 1; k <= n; k++){//길이
-            for(int i = 0; i < n; i++){
+        for (int i = elements.length; i < elements.length * 2; i++) {
+            a[i] = elements[i - elements.length];
+        }
+        HashSet<Integer> set = new HashSet<>();
+        for (int len = 1; len <= elements.length; len++) {//len
+            for (int start = 0; start < elements.length; start++) {//start
                 int sum = 0;
-                for(int j = i; j < i + k; j++){
-                    sum += a[j];
+                for (int k = start; k < start + len; k++) {
+                    sum += a[k];
                 }
                 set.add(sum);
             }
