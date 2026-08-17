@@ -3,21 +3,24 @@ import java.util.*;
 class Solution {
     public String solution(String number, int k) {
         String answer = "";
-        Stack<Character> stk = new Stack<>();
-        for (char c : number.toCharArray()) {
-            while (!stk.isEmpty() && k > 0 && stk.peek() < c) {
+        Stack<Integer> stk = new Stack<>();
+        stk.push(number.charAt(0) - '0');
+        int cnt = 0;
+        for (int i = 1; i < number.length(); i++) {
+            int num = number.charAt(i) - '0';
+            while (cnt < k && !stk.isEmpty() && num > stk.peek()) {
+                cnt++;
                 stk.pop();
-                k--;
             }
-            stk.push(c);
+            stk.push(num);
         }
-        while (!stk.isEmpty() && k > 0) {
+        while (cnt < k) {
             stk.pop();
-            k--;
+            cnt++;
         }
         StringBuilder sb = new StringBuilder();
-        for (char c : stk) {
-            sb.append(c);
+        for (int num : stk) {
+            sb.append(num);
         }
         return sb.toString();
     }
