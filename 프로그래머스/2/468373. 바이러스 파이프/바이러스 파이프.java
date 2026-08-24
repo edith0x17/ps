@@ -14,53 +14,49 @@ class Solution {
             adjB[i] = new ArrayList<>();
             adjC[i] = new ArrayList<>();
         }
-
         for (int[] edge : edges) {
-            int from = edge[0], to = edge[1], pipe = edge[2];
-            if (pipe == 1) {
-                adjA[from].add(to);
-                adjA[to].add(from);
-            } else if (pipe == 2) {
-                adjB[from].add(to);
-                adjB[to].add(from);
+            int start = edge[0], end = edge[1], type = edge[2];
+            if (type == 1) {
+                adjA[start].add(end);
+                adjA[end].add(start);
+            } else if (type == 2) {
+                adjB[start].add(end);
+                adjB[end].add(start);
             } else {
-                adjC[from].add(to);
-                adjC[to].add(from);
+                adjC[start].add(end);
+                adjC[end].add(start);
             }
         }
-
-        int[] tmp = new int[]{1, 2, 3};
         ret = new int[k];
-        go(0, n, infection, k, tmp);
+        int[] arr = new int[]{1, 2, 3};
+        go(0, n, infection, k, arr);
         return answer;
     }
 
-    static void bfs(boolean[] infected, ArrayList<Integer>[] adj, int n) {
+    static void bfs(boolean[] infected, ArrayList<Integer>[] adj) {
         Queue<Integer> q = new ArrayDeque<>();
-        for (int i = 0; i < n + 1; i++) {
+        for (int i = 0; i < infected.length; i++) {
             if (infected[i]) q.offer(i);
         }
 
         while (!q.isEmpty()) {
             int here = q.poll();
-
             for (int there : adj[here]) {
                 if (infected[there]) continue;
-
                 infected[there] = true;
                 q.offer(there);
             }
         }
     }
 
-    static void go(int depth, int n, int infection, int k, int[] tmp) {//중복순열
+    static void go(int depth, int n, int infection, int k, int[] arr) {
         if (depth == k) {
             boolean[] infected = new boolean[n + 1];
             infected[infection] = true;
-            for (int pipe : ret) {
-                if (pipe == 1) bfs(infected, adjA, n);
-                else if (pipe == 2) bfs(infected, adjB, n);
-                else bfs(infected, adjC, n);
+            for (int i : ret) {
+                if (i == 1) bfs(infected, adjA);
+                else if (i == 2) bfs(infected, adjB);
+                else bfs(infected, adjC);
             }
             int cnt = 0;
             for (int i = 0; i < n + 1; i++) {
@@ -70,8 +66,8 @@ class Solution {
             return;
         }
         for (int i = 0; i < 3; i++) {
-            ret[depth] = tmp[i];
-            go(depth + 1, n, infection, k, tmp);
+            ret[depth] = arr[i];
+            go(depth + 1, n, infection, k, arr);
         }
     }
 }
