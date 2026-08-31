@@ -1,22 +1,22 @@
+import java.util.*;
+
 class Solution {
     public String solution(int n, int t, int m, int p) {
-        StringBuilder answer = new StringBuilder();
-        int num = 0;
-        int turn = 0;      // 전체에서 몇 번째 문자인지
-        while (answer.length() < t) {
-            String str = Integer.toString(num, n).toUpperCase();
-
-            for (int i = 0; i < str.length(); i++) {
+        String answer = "";
+        int num = 0, turn = 0;
+        StringBuilder sb = new StringBuilder();
+        while (sb.length() < t) {
+            String s = Integer.toString(num, n).toUpperCase();
+            for (int i = 0; i < s.length(); i++) {
                 if (turn % m == p - 1) {
-                    answer.append(str.charAt(i));
-                    if (answer.length() == t) break;
+                    sb.append(s.charAt(i));
+                    if (sb.length() == t) break;
                 }
-                
                 turn++;
             }
-
             num++;
         }
-        return answer.toString();
+        answer = sb.toString();
+        return answer;
     }
 }
