@@ -2,32 +2,33 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] priorities, int location) {
-        int answer = 0;
-        Queue<Data> q = new ArrayDeque<>();
-        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
-        for (int i = 0; i < priorities.length; i++) {
-            q.offer(new Data(i, priorities[i]));
-            pq.offer(priorities[i]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> -(a - b));
+        for(int i : priorities){
+            pq.offer(i);
         }
-        while (!q.isEmpty()) {
-            Data cur = q.poll();
-            if (cur.priority < pq.peek()) {
-                q.offer(cur);
-                continue;
+        Queue<int[]> q = new ArrayDeque<>();
+        int idx = 0;
+        for(int i : priorities){
+            q.offer(new int[]{i, idx++});//priorty, idx
+        }
+        int answer = 1;
+        while(!pq.isEmpty()){
+            int priority = pq.poll();
+            
+            boolean flag = false;
+            while(true){
+                int[] tmp = q.poll();
+                if(tmp[0] == priority){
+                    if(tmp[1] == location)flag = true;
+                    break;
+                }
+                
+                q.offer(tmp);
             }
-            pq.poll();
+            if(flag)break;
+            
             answer++;
-            if (cur.idx == location) return answer;
         }
-        return -1;
-    }
-
-    static class Data {
-        int idx, priority;
-
-        Data(int idx, int priority) {
-            this.idx = idx;
-            this.priority = priority;
-        }
+        return answer;
     }
 }
