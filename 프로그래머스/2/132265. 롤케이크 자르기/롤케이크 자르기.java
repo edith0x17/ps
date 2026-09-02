@@ -5,15 +5,22 @@ class Solution {
         int answer = 0;
         Set<Integer> left = new HashSet<>();
         Map<Integer, Integer> right = new HashMap<>();
-        for(int i: topping){
+
+        // 처음에는 모든 topping을 right에 넣기
+        for (int i : topping) {
             right.put(i, right.getOrDefault(i, 0) + 1);
         }
-        for(int i = 0; i < topping.length; i++){
-            left.add(topping[i]);
-            right.put(topping[i], right.getOrDefault(topping[i], 0) - 1);
-            if(right.get(topping[i]) == 0)right.remove(topping[i]);
+        for (int x : topping) {
+            // x 하나를 왼쪽으로 이동
+            left.add(x);
+
+            // right에서 x의 개수 1 감소
+            // 개수가 0이면 right에서 remove
+            right.put(x, right.get(x) - 1);
+            if (right.get(x) == 0) right.remove(x);
             
-            if(left.size() == right.size())answer++;
+            // left.size() == right.size()면 answer++
+            if (left.size() == right.size()) answer++;
         }
         return answer;
     }
