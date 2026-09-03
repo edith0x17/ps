@@ -1,63 +1,62 @@
 import java.util.*;
 
 class Solution {
-    static char[][] map;
-
     public int solution(int m, int n, String[] board) {
         int answer = 0;
-        map = new char[m][n];
+        char[][] arr = new char[m][n];
         for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                map[i][j] = board[i].charAt(j);
-            }
+            arr[i] = board[i].toCharArray();
         }
         while (true) {
-            boolean[][] remove = new boolean[m][n];
-            if (!check(map, remove)) break;
+            boolean flag = false;
+            boolean[][] map = new boolean[m][n];
+
+            // 1. 전체 보드 돌면서 2x2 찾기
+            for (int i = 0; i < m - 1; i++) {
+                for (int j = 0; j < n - 1; j++) {
+                    char c = arr[i][j];
+                    // 이미 삭제된 공간이면 검사 X
+                    if (c == ' ') continue;
+                    if (arr[i][j + 1] == c
+                            && arr[i + 1][j + 1] == c
+                            && arr[i + 1][j] == c) {
+                        flag = true;
+                        map[i][j] = true;
+                        map[i][j + 1] = true;
+                        map[i + 1][j + 1] = true;
+                        map[i + 1][j] = true;
+                    }
+                }
+            }
+
+            // 2. 삭제할 게 없으면 종료
+            if (!flag) break;
+
+            // 3. 표시된 블록 실제 삭제
             for (int i = 0; i < m; i++) {
                 for (int j = 0; j < n; j++) {
-                    if (remove[i][j]) {
-                        map[i][j] = '.';
+                    if (map[i][j]) {
+                        arr[i][j] = ' ';
                         answer++;
                     }
                 }
             }
-            gravity(map);
-        }
-        return answer;
-    }
 
-    static void gravity(char[][] map) {
-        for (int j = 0; j < map[0].length; j++) {
-            int write = map.length - 1;//m - 1
-            for (int i = map.length - 1; i >= 0; i--) {
-                if (map[i][j] != '.') {
-                    map[write][j] = map[i][j];
+            // 4. 블록 아래로 내리기
+            for (int col = 0; col < n; col++) {
+                int write = m - 1;
+                for (int row = m - 1; row >= 0; row--) {
+                    if (arr[row][col] != ' ') {
+                        arr[write][col] = arr[row][col];
+                        write--;
+                    }
+                }
+                while (write >= 0) {
+                    arr[write][col] = ' ';
                     write--;
                 }
             }
-            while (write >= 0) {
-                map[write][j] = '.';
-                write--;
-            }
         }
-    }
-
-    static boolean check(char[][] map, boolean[][] remove) {
-        boolean found = false;
-        for (int i = 0; i < map.length - 1; i++) {
-            for (int j = 0; j < map[0].length - 1; j++) {
-                char ch = map[i][j];
-                if (ch == '.') continue;
-                if (ch == map[i][j + 1] && ch == map[i + 1][j + 1] && ch == map[i + 1][j]) {
-                    remove[i][j] = true;
-                    remove[i][j + 1] = true;
-                    remove[i + 1][j + 1] = true;
-                    remove[i + 1][j] = true;
-                    found = true;
-                }
-            }
-        }
-        return found;
+        return answer;
     }
 }
