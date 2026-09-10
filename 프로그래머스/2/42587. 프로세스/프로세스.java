@@ -2,32 +2,32 @@ import java.util.*;
 
 class Solution {
     public int solution(int[] priorities, int location) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>((a, b) -> -(a - b));
-        for(int i : priorities){
+        int answer = 0;
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Collections.reverseOrder());
+        for (int i : priorities) {
             pq.offer(i);
         }
         Queue<int[]> q = new ArrayDeque<>();
-        int idx = 0;
-        for(int i : priorities){
-            q.offer(new int[]{i, idx++});//priorty, idx
+        for (int i = 0; i < priorities.length; i++) {
+            q.offer(new int[]{i, priorities[i]});
         }
-        int answer = 1;
-        while(!pq.isEmpty()){
-            int priority = pq.poll();
-            
+        int cnt = 1;
+        while (!pq.isEmpty()) {
+            int target = pq.poll();
             boolean flag = false;
-            while(true){
+            while (!q.isEmpty()) {
                 int[] tmp = q.poll();
-                if(tmp[0] == priority){
-                    if(tmp[1] == location)flag = true;
+                if (tmp[1] == target) {
+                    if (tmp[0] == location) {
+                        answer = cnt;
+                        flag = true;
+                    }
                     break;
                 }
-                
                 q.offer(tmp);
             }
             if(flag)break;
-            
-            answer++;
+            cnt++;
         }
         return answer;
     }
