@@ -7,7 +7,8 @@ class Solution {
         int box = 1;
         for (int i = 0; i < order.length; i++) {
             while (box <= order[i]) {
-                stk.push(box++);
+                stk.push(box);
+                box++;
             }
             if (stk.pop() == order[i]) answer++;
             else break;
